@@ -3932,7 +3932,12 @@ extern "C" {
         output_size_data: *const i64,
         output_size_len: c_int,
     );
-    pub fn atg_add(out__: *mut *mut C_tensor, self_: *mut C_tensor, other_: *mut C_tensor);
+    pub fn atg_add(
+        out__: *mut *mut C_tensor,
+        self_: *mut C_tensor,
+        other_: *mut C_tensor,
+        alpha_: *mut C_scalar,
+    );
     pub fn atg_add_(out__: *mut *mut C_tensor, self_: *mut C_tensor, other_: *mut C_tensor);
     pub fn atg_add_out(
         out__: *mut *mut C_tensor,
@@ -3940,7 +3945,12 @@ extern "C" {
         self_: *mut C_tensor,
         other_: *mut C_tensor,
     );
-    pub fn atg_add_scalar(out__: *mut *mut C_tensor, self_: *mut C_tensor, other_: *mut C_scalar);
+    pub fn atg_add_scalar(
+        out__: *mut *mut C_tensor,
+        self_: *mut C_tensor,
+        other_: *mut C_scalar,
+        alpha_: *mut C_scalar,
+    );
     pub fn atg_add_scalar_(out__: *mut *mut C_tensor, self_: *mut C_tensor, other_: *mut C_scalar);
     pub fn atg_add_scalar_out(
         out__: *mut *mut C_tensor,
@@ -4010,6 +4020,8 @@ extern "C" {
         self_: *mut C_tensor,
         mat1_: *mut C_tensor,
         mat2_: *mut C_tensor,
+        beta_: *mut C_scalar,
+        alpha_: *mut C_scalar,
     );
     pub fn atg_addmm_(
         out__: *mut *mut C_tensor,
@@ -14568,7 +14580,12 @@ extern "C" {
         return_complex_: c_int,
         align_to_window_: c_int,
     );
-    pub fn atg_sub(out__: *mut *mut C_tensor, self_: *mut C_tensor, other_: *mut C_tensor);
+    pub fn atg_sub(
+        out__: *mut *mut C_tensor,
+        self_: *mut C_tensor,
+        other_: *mut C_tensor,
+        alpha_: *mut C_scalar,
+    );
     pub fn atg_sub_(out__: *mut *mut C_tensor, self_: *mut C_tensor, other_: *mut C_tensor);
     pub fn atg_sub_out(
         out__: *mut *mut C_tensor,
@@ -14576,7 +14593,12 @@ extern "C" {
         self_: *mut C_tensor,
         other_: *mut C_tensor,
     );
-    pub fn atg_sub_scalar(out__: *mut *mut C_tensor, self_: *mut C_tensor, other_: *mut C_scalar);
+    pub fn atg_sub_scalar(
+        out__: *mut *mut C_tensor,
+        self_: *mut C_tensor,
+        other_: *mut C_scalar,
+        alpha_: *mut C_scalar,
+    );
     pub fn atg_sub_scalar_(out__: *mut *mut C_tensor, self_: *mut C_tensor, other_: *mut C_scalar);
     pub fn atg_sub_scalar_out(
         out__: *mut *mut C_tensor,

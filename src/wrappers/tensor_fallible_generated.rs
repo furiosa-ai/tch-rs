@@ -9475,9 +9475,14 @@ impl Tensor {
         Ok((Tensor { c_tensor: c_tensors[0] }, Tensor { c_tensor: c_tensors[1] }))
     }
 
-    pub fn f_add(&self, other: &Tensor) -> Result<Tensor, TchError> {
+    pub fn f_add<S: Into<Scalar>>(&self, other: &Tensor, alpha: S) -> Result<Tensor, TchError> {
         let mut c_tensors = [std::ptr::null_mut(); 1];
-        unsafe_torch_err!(atg_add(c_tensors.as_mut_ptr(), self.c_tensor, other.c_tensor));
+        unsafe_torch_err!(atg_add(
+            c_tensors.as_mut_ptr(),
+            self.c_tensor,
+            other.c_tensor,
+            alpha.into().c_scalar
+        ));
         Ok(Tensor { c_tensor: c_tensors[0] })
     }
 
@@ -9498,12 +9503,13 @@ impl Tensor {
         Ok(Tensor { c_tensor: c_tensors[0] })
     }
 
-    pub fn f_add_scalar<S: Into<Scalar>>(&self, other: S) -> Result<Tensor, TchError> {
+    pub fn f_add_scalar<S: Into<Scalar>>(&self, other: S, alpha: S) -> Result<Tensor, TchError> {
         let mut c_tensors = [std::ptr::null_mut(); 1];
         unsafe_torch_err!(atg_add_scalar(
             c_tensors.as_mut_ptr(),
             self.c_tensor,
-            other.into().c_scalar
+            other.into().c_scalar,
+            alpha.into().c_scalar
         ));
         Ok(Tensor { c_tensor: c_tensors[0] })
     }
@@ -9650,13 +9656,21 @@ impl Tensor {
         Ok(Tensor { c_tensor: c_tensors[0] })
     }
 
-    pub fn f_addmm(&self, mat1: &Tensor, mat2: &Tensor) -> Result<Tensor, TchError> {
+    pub fn f_addmm<S: Into<Scalar>>(
+        &self,
+        mat1: &Tensor,
+        mat2: &Tensor,
+        beta: S,
+        alpha: S,
+    ) -> Result<Tensor, TchError> {
         let mut c_tensors = [std::ptr::null_mut(); 1];
         unsafe_torch_err!(atg_addmm(
             c_tensors.as_mut_ptr(),
             self.c_tensor,
             mat1.c_tensor,
-            mat2.c_tensor
+            mat2.c_tensor,
+            beta.into().c_scalar,
+            alpha.into().c_scalar
         ));
         Ok(Tensor { c_tensor: c_tensors[0] })
     }
@@ -35364,9 +35378,14 @@ impl Tensor {
         Ok(Tensor { c_tensor: c_tensors[0] })
     }
 
-    pub fn f_sub(&self, other: &Tensor) -> Result<Tensor, TchError> {
+    pub fn f_sub<S: Into<Scalar>>(&self, other: &Tensor, alpha: S) -> Result<Tensor, TchError> {
         let mut c_tensors = [std::ptr::null_mut(); 1];
-        unsafe_torch_err!(atg_sub(c_tensors.as_mut_ptr(), self.c_tensor, other.c_tensor));
+        unsafe_torch_err!(atg_sub(
+            c_tensors.as_mut_ptr(),
+            self.c_tensor,
+            other.c_tensor,
+            alpha.into().c_scalar
+        ));
         Ok(Tensor { c_tensor: c_tensors[0] })
     }
 
@@ -35387,12 +35406,13 @@ impl Tensor {
         Ok(Tensor { c_tensor: c_tensors[0] })
     }
 
-    pub fn f_sub_scalar<S: Into<Scalar>>(&self, other: S) -> Result<Tensor, TchError> {
+    pub fn f_sub_scalar<S: Into<Scalar>>(&self, other: S, alpha: S) -> Result<Tensor, TchError> {
         let mut c_tensors = [std::ptr::null_mut(); 1];
         unsafe_torch_err!(atg_sub_scalar(
             c_tensors.as_mut_ptr(),
             self.c_tensor,
-            other.into().c_scalar
+            other.into().c_scalar,
+            alpha.into().c_scalar
         ));
         Ok(Tensor { c_tensor: c_tensors[0] })
     }

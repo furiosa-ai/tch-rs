@@ -537,10 +537,10 @@ void atg_adaptive_max_pool3d(tensor *, tensor self, int64_t *output_size_data, i
 void atg_adaptive_max_pool3d_backward(tensor *, tensor grad_output, tensor self, tensor indices);
 void atg_adaptive_max_pool3d_backward_grad_input(tensor *, tensor grad_input, tensor grad_output, tensor self, tensor indices);
 void atg_adaptive_max_pool3d_out(tensor *, tensor out, tensor indices, tensor self, int64_t *output_size_data, int output_size_len);
-void atg_add(tensor *, tensor self, tensor other);
+void atg_add(tensor *, tensor self, tensor other, scalar alpha);
 void atg_add_(tensor *, tensor self, tensor other);
 void atg_add_out(tensor *, tensor out, tensor self, tensor other);
-void atg_add_scalar(tensor *, tensor self, scalar other);
+void atg_add_scalar(tensor *, tensor self, scalar other, scalar alpha);
 void atg_add_scalar_(tensor *, tensor self, scalar other);
 void atg_add_scalar_out(tensor *, tensor out, tensor self, scalar other);
 void atg_addbmm(tensor *, tensor self, tensor batch1, tensor batch2);
@@ -552,7 +552,7 @@ void atg_addcdiv_out(tensor *, tensor out, tensor self, tensor tensor1, tensor t
 void atg_addcmul(tensor *, tensor self, tensor tensor1, tensor tensor2);
 void atg_addcmul_(tensor *, tensor self, tensor tensor1, tensor tensor2);
 void atg_addcmul_out(tensor *, tensor out, tensor self, tensor tensor1, tensor tensor2);
-void atg_addmm(tensor *, tensor self, tensor mat1, tensor mat2);
+void atg_addmm(tensor *, tensor self, tensor mat1, tensor mat2, scalar beta, scalar alpha);
 void atg_addmm_(tensor *, tensor self, tensor mat1, tensor mat2);
 void atg_addmm_out(tensor *, tensor out, tensor self, tensor mat1, tensor mat2);
 void atg_addmv(tensor *, tensor self, tensor mat, tensor vec);
@@ -2409,7 +2409,7 @@ void atg_stft_center(tensor *, tensor self, int64_t n_fft, int64_t hop_length_v,
 void atg_sub(tensor *, tensor self, tensor other);
 void atg_sub_(tensor *, tensor self, tensor other);
 void atg_sub_out(tensor *, tensor out, tensor self, tensor other);
-void atg_sub_scalar(tensor *, tensor self, scalar other);
+void atg_sub_scalar(tensor *, tensor self, scalar other, scalar alpha);
 void atg_sub_scalar_(tensor *, tensor self, scalar other);
 void atg_sub_scalar_out(tensor *, tensor out, tensor self, scalar other);
 void atg_subtract(tensor *, tensor self, tensor other);
