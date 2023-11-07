@@ -90,6 +90,7 @@ let with_optional_scalar_args =
     ; "sub"
     ; "addmm"
     ; "constant_pad_nd"
+    ; "hardtanh"
     ]
 
 let excluded_prefixes =
