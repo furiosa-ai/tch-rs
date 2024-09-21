@@ -342,6 +342,12 @@ void atg__amp_update_scale_out(tensor *out__, tensor out, tensor self, tensor gr
   )
 }
 
+void atg__assert_scalar(scalar self_scalar, char* assert_msg_ptr, int assert_msg_len) {
+  PROTECT(
+    torch::_assert_scalar(*self_scalar, std::string(assert_msg_ptr, assert_msg_len));
+  )
+}
+
 void atg__assert_tensor_metadata(tensor a, int64_t *size_data, int size_len, int64_t *stride_data, int stride_len, int dtype) {
   PROTECT(
     torch::_assert_tensor_metadata(*a, size_data == nullptr ? c10::nullopt : c10::optional<torch::IntArrayRef>(torch::IntArrayRef(size_data, size_len)), stride_data == nullptr ? c10::nullopt : c10::optional<torch::IntArrayRef>(torch::IntArrayRef(stride_data, stride_len)), dtype < 0 ? c10::nullopt : c10::optional<at::ScalarType>(at::ScalarType(dtype)));
@@ -359,6 +365,58 @@ void atg__autocast_to_reduced_precision(tensor *out__, tensor self, int cuda_ena
   PROTECT(
     auto outputs__ = self->_autocast_to_reduced_precision((bool)cuda_enabled, (bool)cpu_enabled, at::ScalarType(cuda_dtype), at::ScalarType(cpu_dtype));
     out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__batch_norm_no_update(tensor *out__, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, double momentum, double eps) {
+  PROTECT(
+    auto outputs__ = torch::_batch_norm_no_update(*input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), momentum, eps);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+    out__[2] = new torch::Tensor(std::get<2>(outputs__));
+    out__[3] = new torch::Tensor(std::get<3>(outputs__));
+  )
+}
+
+void atg__batch_norm_no_update_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor out3, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, double momentum, double eps) {
+  PROTECT(
+    auto outputs__ = torch::_batch_norm_no_update_out(*out0, *out1, *out2, *out3, *input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), momentum, eps);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+    out__[2] = new torch::Tensor(std::get<2>(outputs__));
+    out__[3] = new torch::Tensor(std::get<3>(outputs__));
+  )
+}
+
+void atg__batch_norm_with_update(tensor *out__, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, double momentum, double eps) {
+  PROTECT(
+    auto outputs__ = torch::_batch_norm_with_update(*input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), *running_mean, *running_var, momentum, eps);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+    out__[2] = new torch::Tensor(std::get<2>(outputs__));
+    out__[3] = new torch::Tensor(std::get<3>(outputs__));
+  )
+}
+
+void atg__batch_norm_with_update_functional(tensor *out__, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, double momentum, double eps) {
+  PROTECT(
+    auto outputs__ = torch::_batch_norm_with_update_functional(*input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), *running_mean, *running_var, momentum, eps);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+    out__[2] = new torch::Tensor(std::get<2>(outputs__));
+    out__[3] = new torch::Tensor(std::get<3>(outputs__));
+    out__[4] = new torch::Tensor(std::get<4>(outputs__));
+    out__[5] = new torch::Tensor(std::get<5>(outputs__));
+  )
+}
+
+void atg__batch_norm_with_update_out(tensor *out__, tensor out, tensor save_mean, tensor save_invstd, tensor reserve, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, double momentum, double eps) {
+  PROTECT(
+    auto outputs__ = torch::_batch_norm_with_update_out(*out, *save_mean, *save_invstd, *reserve, *input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), *running_mean, *running_var, momentum, eps);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+    out__[2] = new torch::Tensor(std::get<2>(outputs__));
+    out__[3] = new torch::Tensor(std::get<3>(outputs__));
   )
 }
 
@@ -442,6 +500,20 @@ void atg__cholesky_solve_helper(tensor *out__, tensor self, tensor A, int upper)
 void atg__cholesky_solve_helper_out(tensor *out__, tensor out, tensor self, tensor A, int upper) {
   PROTECT(
     auto outputs__ = torch::_cholesky_solve_helper_out(*out, *self, *A, (bool)upper);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__chunk_cat(tensor *out__, tensor *tensors_data, int tensors_len, int64_t dim, int64_t num_chunks) {
+  PROTECT(
+    auto outputs__ = torch::_chunk_cat(of_carray_tensor(tensors_data, tensors_len), dim, num_chunks);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__chunk_cat_out(tensor *out__, tensor out, tensor *tensors_data, int tensors_len, int64_t dim, int64_t num_chunks) {
+  PROTECT(
+    auto outputs__ = torch::_chunk_cat_out(*out, of_carray_tensor(tensors_data, tensors_len), dim, num_chunks);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -532,14 +604,14 @@ void atg__conj_physical_out(tensor *out__, tensor out, tensor self) {
 
 void atg__conv_depthwise2d(tensor *out__, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::_conv_depthwise2d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::_conv_depthwise2d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__conv_depthwise2d_out(tensor *out__, tensor out, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::_conv_depthwise2d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::_conv_depthwise2d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -572,30 +644,37 @@ void atg__convert_indices_from_csr_to_coo_out(tensor *out__, tensor out, tensor 
   )
 }
 
+void atg__convert_weight_to_int4pack(tensor *out__, tensor self, int64_t innerKTiles) {
+  PROTECT(
+    auto outputs__ = torch::_convert_weight_to_int4pack(*self, innerKTiles);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
 void atg__convolution(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int transposed, int64_t *output_padding_data, int output_padding_len, int64_t groups, int benchmark, int deterministic, int cudnn_enabled, int allow_tf32) {
   PROTECT(
-    auto outputs__ = torch::_convolution(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups, (bool)benchmark, (bool)deterministic, (bool)cudnn_enabled, (bool)allow_tf32);
+    auto outputs__ = torch::_convolution(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups, (bool)benchmark, (bool)deterministic, (bool)cudnn_enabled, (bool)allow_tf32);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__convolution_deprecated(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int transposed, int64_t *output_padding_data, int output_padding_len, int64_t groups, int benchmark, int deterministic, int cudnn_enabled) {
   PROTECT(
-    auto outputs__ = torch::_convolution(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups, (bool)benchmark, (bool)deterministic, (bool)cudnn_enabled);
+    auto outputs__ = torch::_convolution(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups, (bool)benchmark, (bool)deterministic, (bool)cudnn_enabled);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__convolution_mode(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, char* padding_ptr, int padding_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::_convolution_mode(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), std::string(padding_ptr, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::_convolution_mode(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), std::string(padding_ptr, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__convolution_out(tensor *out__, tensor out, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int transposed, int64_t *output_padding_data, int output_padding_len, int64_t groups, int benchmark, int deterministic, int cudnn_enabled, int allow_tf32) {
   PROTECT(
-    auto outputs__ = torch::_convolution_out(*out, *input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups, (bool)benchmark, (bool)deterministic, (bool)cudnn_enabled, (bool)allow_tf32);
+    auto outputs__ = torch::_convolution_out(*out, *input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups, (bool)benchmark, (bool)deterministic, (bool)cudnn_enabled, (bool)allow_tf32);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -635,11 +714,18 @@ void atg__cslt_compress(tensor *out__, tensor input) {
   )
 }
 
-void atg__cslt_sparse_mm(tensor *out__, tensor compressed_A, tensor dense_B, tensor bias, int transpose_result) {
+void atg__cslt_sparse_mm(tensor *out__, tensor compressed_A, tensor dense_B, tensor bias, tensor alpha, int out_dtype, int transpose_result, int64_t alg_id) {
   PROTECT(
-    auto outputs__ = torch::_cslt_sparse_mm(*compressed_A, *dense_B, (bias ? *bias : torch::Tensor()), (bool)transpose_result);
+    auto outputs__ = torch::_cslt_sparse_mm(*compressed_A, *dense_B, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (alpha ? ::std::optional<at::Tensor>(*alpha) : ::std::nullopt), out_dtype < 0 ? c10::nullopt : c10::optional<at::ScalarType>(at::ScalarType(out_dtype)), (bool)transpose_result, alg_id);
     out__[0] = new torch::Tensor(outputs__);
   )
+}
+
+int64_t atg__cslt_sparse_mm_search(tensor compressed_A, tensor dense_B, tensor bias, tensor alpha, int out_dtype, int transpose_result) {
+  PROTECT(
+    return torch::_cslt_sparse_mm_search(*compressed_A, *dense_B, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (alpha ? ::std::optional<at::Tensor>(*alpha) : ::std::nullopt), out_dtype < 0 ? c10::nullopt : c10::optional<at::ScalarType>(at::ScalarType(out_dtype)), (bool)transpose_result);
+  )
+  return 0;
 }
 
 void atg__ctc_loss(tensor *out__, tensor log_probs, tensor targets, int64_t *input_lengths_data, int input_lengths_len, int64_t *target_lengths_data, int target_lengths_len, int64_t blank, int zero_infinity) {
@@ -735,7 +821,7 @@ void atg__cudnn_init_dropout_state_out(tensor *out__, tensor out, double dropout
 
 void atg__cudnn_rnn(tensor *out__, tensor input, tensor *weight_data, int weight_len, int64_t weight_stride0, tensor weight_buf, tensor hx, tensor cx, int64_t mode, int64_t hidden_size, int64_t proj_size, int64_t num_layers, int batch_first, double dropout, int train, int bidirectional, int64_t *batch_sizes_data, int batch_sizes_len, tensor dropout_state) {
   PROTECT(
-    auto outputs__ = torch::_cudnn_rnn(*input, of_carray_tensor(weight_data, weight_len), weight_stride0, (weight_buf ? *weight_buf : torch::Tensor()), *hx, (cx ? *cx : torch::Tensor()), mode, hidden_size, proj_size, num_layers, (bool)batch_first, dropout, (bool)train, (bool)bidirectional, torch::IntArrayRef(batch_sizes_data, batch_sizes_len), (dropout_state ? *dropout_state : torch::Tensor()));
+    auto outputs__ = torch::_cudnn_rnn(*input, of_carray_tensor(weight_data, weight_len), weight_stride0, (weight_buf ? ::std::optional<at::Tensor>(*weight_buf) : ::std::nullopt), *hx, (cx ? ::std::optional<at::Tensor>(*cx) : ::std::nullopt), mode, hidden_size, proj_size, num_layers, (bool)batch_first, dropout, (bool)train, (bool)bidirectional, torch::IntArrayRef(batch_sizes_data, batch_sizes_len), (dropout_state ? ::std::optional<at::Tensor>(*dropout_state) : ::std::nullopt));
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -760,7 +846,7 @@ void atg__cudnn_rnn_flatten_weight_out(tensor *out__, tensor out, tensor *weight
 
 void atg__cudnn_rnn_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor out3, tensor out4, tensor input, tensor *weight_data, int weight_len, int64_t weight_stride0, tensor weight_buf, tensor hx, tensor cx, int64_t mode, int64_t hidden_size, int64_t proj_size, int64_t num_layers, int batch_first, double dropout, int train, int bidirectional, int64_t *batch_sizes_data, int batch_sizes_len, tensor dropout_state) {
   PROTECT(
-    auto outputs__ = torch::_cudnn_rnn_out(*out0, *out1, *out2, *out3, *out4, *input, of_carray_tensor(weight_data, weight_len), weight_stride0, (weight_buf ? *weight_buf : torch::Tensor()), *hx, (cx ? *cx : torch::Tensor()), mode, hidden_size, proj_size, num_layers, (bool)batch_first, dropout, (bool)train, (bool)bidirectional, torch::IntArrayRef(batch_sizes_data, batch_sizes_len), (dropout_state ? *dropout_state : torch::Tensor()));
+    auto outputs__ = torch::_cudnn_rnn_out(*out0, *out1, *out2, *out3, *out4, *input, of_carray_tensor(weight_data, weight_len), weight_stride0, (weight_buf ? ::std::optional<at::Tensor>(*weight_buf) : ::std::nullopt), *hx, (cx ? ::std::optional<at::Tensor>(*cx) : ::std::nullopt), mode, hidden_size, proj_size, num_layers, (bool)batch_first, dropout, (bool)train, (bool)bidirectional, torch::IntArrayRef(batch_sizes_data, batch_sizes_len), (dropout_state ? ::std::optional<at::Tensor>(*dropout_state) : ::std::nullopt));
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -811,9 +897,9 @@ void atg__dirichlet_grad_out(tensor *out__, tensor out, tensor x, tensor alpha, 
   )
 }
 
-void atg__efficient_attention_backward(tensor *out__, tensor grad_out_, tensor query, tensor key, tensor value, tensor bias, tensor out, tensor cu_seqlens_q, tensor cu_seqlens_k, int64_t max_seqlen_k, int64_t max_seqlen_q, tensor logsumexp, double dropout_p, tensor philox_seed, tensor philox_offset, int64_t custom_mask_type, int bias_requires_grad, double scale_v, uint8_t scale_null, int64_t num_splits_key_v, uint8_t num_splits_key_null) {
+void atg__efficient_attention_backward(tensor *out__, tensor grad_out_, tensor query, tensor key, tensor value, tensor bias, tensor out, tensor cu_seqlens_q, tensor cu_seqlens_k, int64_t max_seqlen_q, int64_t max_seqlen_k, tensor logsumexp, double dropout_p, tensor philox_seed, tensor philox_offset, int64_t custom_mask_type, int bias_requires_grad, double scale_v, uint8_t scale_null, int64_t num_splits_key_v, uint8_t num_splits_key_null, int64_t window_size_v, uint8_t window_size_null, int shared_storage_dqdkdv) {
   PROTECT(
-    auto outputs__ = torch::_efficient_attention_backward(*grad_out_, *query, *key, *value, (bias ? *bias : torch::Tensor()), *out, (cu_seqlens_q ? *cu_seqlens_q : torch::Tensor()), (cu_seqlens_k ? *cu_seqlens_k : torch::Tensor()), max_seqlen_k, max_seqlen_q, *logsumexp, dropout_p, *philox_seed, *philox_offset, custom_mask_type, (bool)bias_requires_grad, scale_null ? c10::nullopt : c10::optional<double>(scale_v), num_splits_key_null ? c10::nullopt : c10::optional<int64_t>(num_splits_key_v));
+    auto outputs__ = torch::_efficient_attention_backward(*grad_out_, *query, *key, *value, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), *out, (cu_seqlens_q ? ::std::optional<at::Tensor>(*cu_seqlens_q) : ::std::nullopt), (cu_seqlens_k ? ::std::optional<at::Tensor>(*cu_seqlens_k) : ::std::nullopt), max_seqlen_q, max_seqlen_k, *logsumexp, dropout_p, *philox_seed, *philox_offset, custom_mask_type, (bool)bias_requires_grad, scale_null ? c10::nullopt : c10::optional<double>(scale_v), num_splits_key_null ? c10::nullopt : c10::optional<int64_t>(num_splits_key_v), window_size_null ? c10::nullopt : c10::optional<int64_t>(window_size_v), (bool)shared_storage_dqdkdv);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -837,7 +923,7 @@ void atg__efficientzerotensor_out(tensor *out__, tensor out, int64_t *size_data,
 
 void atg__embedding_bag(tensor *out__, tensor weight, tensor indices, tensor offsets, int scale_grad_by_freq, int64_t mode, int sparse, tensor per_sample_weights, int include_last_offset, int64_t padding_idx) {
   PROTECT(
-    auto outputs__ = torch::_embedding_bag(*weight, *indices, *offsets, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? *per_sample_weights : torch::Tensor()), (bool)include_last_offset, padding_idx);
+    auto outputs__ = torch::_embedding_bag(*weight, *indices, *offsets, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? ::std::optional<at::Tensor>(*per_sample_weights) : ::std::nullopt), (bool)include_last_offset, padding_idx);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -847,28 +933,28 @@ void atg__embedding_bag(tensor *out__, tensor weight, tensor indices, tensor off
 
 void atg__embedding_bag_backward(tensor *out__, tensor grad, tensor indices, tensor offsets, tensor offset2bag, tensor bag_size, tensor maximum_indices, int64_t num_weights, int scale_grad_by_freq, int64_t mode, int sparse, tensor per_sample_weights, int64_t padding_idx) {
   PROTECT(
-    auto outputs__ = torch::_embedding_bag_backward(*grad, *indices, *offsets, *offset2bag, *bag_size, *maximum_indices, num_weights, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? *per_sample_weights : torch::Tensor()), padding_idx);
+    auto outputs__ = torch::_embedding_bag_backward(*grad, *indices, *offsets, *offset2bag, *bag_size, *maximum_indices, num_weights, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? ::std::optional<at::Tensor>(*per_sample_weights) : ::std::nullopt), padding_idx);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__embedding_bag_dense_backward(tensor *out__, tensor grad, tensor indices, tensor offset2bag, tensor bag_size, tensor maximum_indices, int64_t num_weights, int scale_grad_by_freq, int64_t mode, tensor per_sample_weights, int64_t padding_idx) {
   PROTECT(
-    auto outputs__ = torch::_embedding_bag_dense_backward(*grad, *indices, *offset2bag, *bag_size, *maximum_indices, num_weights, (bool)scale_grad_by_freq, mode, (per_sample_weights ? *per_sample_weights : torch::Tensor()), padding_idx);
+    auto outputs__ = torch::_embedding_bag_dense_backward(*grad, *indices, *offset2bag, *bag_size, *maximum_indices, num_weights, (bool)scale_grad_by_freq, mode, (per_sample_weights ? ::std::optional<at::Tensor>(*per_sample_weights) : ::std::nullopt), padding_idx);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__embedding_bag_dense_backward_out(tensor *out__, tensor out, tensor grad, tensor indices, tensor offset2bag, tensor bag_size, tensor maximum_indices, int64_t num_weights, int scale_grad_by_freq, int64_t mode, tensor per_sample_weights, int64_t padding_idx) {
   PROTECT(
-    auto outputs__ = torch::_embedding_bag_dense_backward_out(*out, *grad, *indices, *offset2bag, *bag_size, *maximum_indices, num_weights, (bool)scale_grad_by_freq, mode, (per_sample_weights ? *per_sample_weights : torch::Tensor()), padding_idx);
+    auto outputs__ = torch::_embedding_bag_dense_backward_out(*out, *grad, *indices, *offset2bag, *bag_size, *maximum_indices, num_weights, (bool)scale_grad_by_freq, mode, (per_sample_weights ? ::std::optional<at::Tensor>(*per_sample_weights) : ::std::nullopt), padding_idx);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__embedding_bag_forward_only(tensor *out__, tensor weight, tensor indices, tensor offsets, int scale_grad_by_freq, int64_t mode, int sparse, tensor per_sample_weights, int include_last_offset, int64_t padding_idx) {
   PROTECT(
-    auto outputs__ = torch::_embedding_bag_forward_only(*weight, *indices, *offsets, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? *per_sample_weights : torch::Tensor()), (bool)include_last_offset, padding_idx);
+    auto outputs__ = torch::_embedding_bag_forward_only(*weight, *indices, *offsets, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? ::std::optional<at::Tensor>(*per_sample_weights) : ::std::nullopt), (bool)include_last_offset, padding_idx);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -878,7 +964,7 @@ void atg__embedding_bag_forward_only(tensor *out__, tensor weight, tensor indice
 
 void atg__embedding_bag_forward_only_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor out3, tensor weight, tensor indices, tensor offsets, int scale_grad_by_freq, int64_t mode, int sparse, tensor per_sample_weights, int include_last_offset, int64_t padding_idx) {
   PROTECT(
-    auto outputs__ = torch::_embedding_bag_forward_only_out(*out0, *out1, *out2, *out3, *weight, *indices, *offsets, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? *per_sample_weights : torch::Tensor()), (bool)include_last_offset, padding_idx);
+    auto outputs__ = torch::_embedding_bag_forward_only_out(*out0, *out1, *out2, *out3, *weight, *indices, *offsets, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? ::std::optional<at::Tensor>(*per_sample_weights) : ::std::nullopt), (bool)include_last_offset, padding_idx);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -888,7 +974,7 @@ void atg__embedding_bag_forward_only_out(tensor *out__, tensor out0, tensor out1
 
 void atg__embedding_bag_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor out3, tensor weight, tensor indices, tensor offsets, int scale_grad_by_freq, int64_t mode, int sparse, tensor per_sample_weights, int include_last_offset, int64_t padding_idx) {
   PROTECT(
-    auto outputs__ = torch::_embedding_bag_out(*out0, *out1, *out2, *out3, *weight, *indices, *offsets, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? *per_sample_weights : torch::Tensor()), (bool)include_last_offset, padding_idx);
+    auto outputs__ = torch::_embedding_bag_out(*out0, *out1, *out2, *out3, *weight, *indices, *offsets, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? ::std::optional<at::Tensor>(*per_sample_weights) : ::std::nullopt), (bool)include_last_offset, padding_idx);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -912,7 +998,7 @@ void atg__embedding_bag_per_sample_weights_backward_out(tensor *out__, tensor ou
 
 void atg__embedding_bag_sparse_backward(tensor *out__, tensor grad, tensor indices, tensor offsets, tensor offset2bag, tensor bag_size, int64_t num_weights, int scale_grad_by_freq, int64_t mode, tensor per_sample_weights, int64_t padding_idx) {
   PROTECT(
-    auto outputs__ = torch::_embedding_bag_sparse_backward(*grad, *indices, *offsets, *offset2bag, *bag_size, num_weights, (bool)scale_grad_by_freq, mode, (per_sample_weights ? *per_sample_weights : torch::Tensor()), padding_idx);
+    auto outputs__ = torch::_embedding_bag_sparse_backward(*grad, *indices, *offsets, *offset2bag, *bag_size, num_weights, (bool)scale_grad_by_freq, mode, (per_sample_weights ? ::std::optional<at::Tensor>(*per_sample_weights) : ::std::nullopt), padding_idx);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -1070,9 +1156,9 @@ void atg__fill_mem_eff_dropout_mask_(tensor *out__, tensor self, double dropout_
   )
 }
 
-void atg__flash_attention_backward(tensor *out__, tensor grad_out, tensor query, tensor key, tensor value, tensor out, tensor logsumexp, tensor cum_seq_q, tensor cum_seq_k, int64_t max_q, int64_t max_k, double dropout_p, int is_causal, tensor philox_seed, tensor philox_offset, double scale_v, uint8_t scale_null) {
+void atg__flash_attention_backward(tensor *out__, tensor grad_out, tensor query, tensor key, tensor value, tensor out, tensor logsumexp, tensor cum_seq_q, tensor cum_seq_k, int64_t max_q, int64_t max_k, double dropout_p, int is_causal, tensor philox_seed, tensor philox_offset, double scale_v, uint8_t scale_null, int64_t window_size_left_v, uint8_t window_size_left_null, int64_t window_size_right_v, uint8_t window_size_right_null) {
   PROTECT(
-    auto outputs__ = torch::_flash_attention_backward(*grad_out, *query, *key, *value, *out, *logsumexp, *cum_seq_q, *cum_seq_k, max_q, max_k, dropout_p, (bool)is_causal, *philox_seed, *philox_offset, scale_null ? c10::nullopt : c10::optional<double>(scale_v));
+    auto outputs__ = torch::_flash_attention_backward(*grad_out, *query, *key, *value, *out, *logsumexp, *cum_seq_q, *cum_seq_k, max_q, max_k, dropout_p, (bool)is_causal, *philox_seed, *philox_offset, scale_null ? c10::nullopt : c10::optional<double>(scale_v), window_size_left_null ? c10::nullopt : c10::optional<int64_t>(window_size_left_v), window_size_right_null ? c10::nullopt : c10::optional<int64_t>(window_size_right_v));
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -1096,6 +1182,13 @@ void atg__foobar_out(tensor *out__, tensor out, tensor self, int arg1, int arg2,
 void atg__functional_assert_async(tensor *out__, tensor self, char* assert_msg_ptr, int assert_msg_len, tensor dep_token) {
   PROTECT(
     auto outputs__ = torch::_functional_assert_async(*self, std::string(assert_msg_ptr, assert_msg_len), *dep_token);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__functional_assert_scalar(tensor *out__, scalar self_scalar, char* assert_msg_ptr, int assert_msg_len, tensor dep_token) {
+  PROTECT(
+    auto outputs__ = torch::_functional_assert_scalar(*self_scalar, std::string(assert_msg_ptr, assert_msg_len), *dep_token);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -1160,7 +1253,7 @@ void atg__fused_moving_avg_obs_fq_helper_out(tensor *out__, tensor out0, tensor 
 
 int64_t atg__fused_sdp_choice(tensor query, tensor key, tensor value, tensor attn_mask, double dropout_p, int is_causal, double scale_v, uint8_t scale_null) {
   PROTECT(
-    return torch::_fused_sdp_choice(*query, *key, *value, (attn_mask ? *attn_mask : torch::Tensor()), dropout_p, (bool)is_causal, scale_null ? c10::nullopt : c10::optional<double>(scale_v));
+    return torch::_fused_sdp_choice(*query, *key, *value, (attn_mask ? ::std::optional<at::Tensor>(*attn_mask) : ::std::nullopt), dropout_p, (bool)is_causal, scale_null ? c10::nullopt : c10::optional<double>(scale_v));
   )
   return 0;
 }
@@ -1231,7 +1324,7 @@ int atg__has_same_storage_numel(tensor self, tensor other) {
 
 tensor *atg__histogramdd_bin_edges(tensor self, int64_t *bins_data, int bins_len, double *range_data, int range_len, tensor weight, int density) {
   PROTECT(
-    auto outputs__ = torch::_histogramdd_bin_edges(*self, torch::IntArrayRef(bins_data, bins_len), at::ArrayRef<double>(range_data, range_len), (weight ? *weight : torch::Tensor()), (bool)density);
+    auto outputs__ = torch::_histogramdd_bin_edges(*self, torch::IntArrayRef(bins_data, bins_len), at::ArrayRef<double>(range_data, range_len), (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bool)density);
     int sz = outputs__.size();
     torch::Tensor **out__ = (torch::Tensor**)malloc((sz + 1) * sizeof(torch::Tensor*));
     for (int i = 0; i < sz; ++i)
@@ -1244,34 +1337,34 @@ tensor *atg__histogramdd_bin_edges(tensor self, int64_t *bins_data, int bins_len
 
 void atg__histogramdd_bin_edges_out(tensor *out_data, int out_len, tensor self, int64_t *bins_data, int bins_len, double *range_data, int range_len, tensor weight, int density) {
   PROTECT(
-    torch::_histogramdd_bin_edges_out(of_carray_tensor(out_data, out_len), *self, torch::IntArrayRef(bins_data, bins_len), at::ArrayRef<double>(range_data, range_len), (weight ? *weight : torch::Tensor()), (bool)density);
+    torch::_histogramdd_bin_edges_out(of_carray_tensor(out_data, out_len), *self, torch::IntArrayRef(bins_data, bins_len), at::ArrayRef<double>(range_data, range_len), (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bool)density);
   )
 }
 
 void atg__histogramdd_from_bin_cts(tensor *out__, tensor self, int64_t *bins_data, int bins_len, double *range_data, int range_len, tensor weight, int density) {
   PROTECT(
-    auto outputs__ = torch::_histogramdd_from_bin_cts(*self, torch::IntArrayRef(bins_data, bins_len), at::ArrayRef<double>(range_data, range_len), (weight ? *weight : torch::Tensor()), (bool)density);
+    auto outputs__ = torch::_histogramdd_from_bin_cts(*self, torch::IntArrayRef(bins_data, bins_len), at::ArrayRef<double>(range_data, range_len), (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bool)density);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__histogramdd_from_bin_cts_out(tensor *out__, tensor out, tensor self, int64_t *bins_data, int bins_len, double *range_data, int range_len, tensor weight, int density) {
   PROTECT(
-    auto outputs__ = torch::_histogramdd_from_bin_cts_out(*out, *self, torch::IntArrayRef(bins_data, bins_len), at::ArrayRef<double>(range_data, range_len), (weight ? *weight : torch::Tensor()), (bool)density);
+    auto outputs__ = torch::_histogramdd_from_bin_cts_out(*out, *self, torch::IntArrayRef(bins_data, bins_len), at::ArrayRef<double>(range_data, range_len), (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bool)density);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__histogramdd_from_bin_tensors(tensor *out__, tensor self, tensor *bins_data, int bins_len, tensor weight, int density) {
   PROTECT(
-    auto outputs__ = torch::_histogramdd_from_bin_tensors(*self, of_carray_tensor(bins_data, bins_len), (weight ? *weight : torch::Tensor()), (bool)density);
+    auto outputs__ = torch::_histogramdd_from_bin_tensors(*self, of_carray_tensor(bins_data, bins_len), (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bool)density);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__histogramdd_from_bin_tensors_out(tensor *out__, tensor out, tensor self, tensor *bins_data, int bins_len, tensor weight, int density) {
   PROTECT(
-    auto outputs__ = torch::_histogramdd_from_bin_tensors_out(*out, *self, of_carray_tensor(bins_data, bins_len), (weight ? *weight : torch::Tensor()), (bool)density);
+    auto outputs__ = torch::_histogramdd_from_bin_tensors_out(*out, *self, of_carray_tensor(bins_data, bins_len), (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bool)density);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -1353,6 +1446,13 @@ int atg__is_zerotensor(tensor self) {
   return 0;
 }
 
+void atg__lazy_clone(tensor *out__, tensor self) {
+  PROTECT(
+    auto outputs__ = torch::_lazy_clone(*self);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
 void atg__linalg_check_errors(tensor info, char* api_name_ptr, int api_name_len, int is_matrix) {
   PROTECT(
     torch::_linalg_check_errors(*info, std::string(api_name_ptr, api_name_len), (bool)is_matrix);
@@ -1390,6 +1490,13 @@ void atg__linalg_eigh_eigenvalues(tensor *out__, tensor eigenvalues, tensor eige
     auto outputs__ = torch::_linalg_eigh_out(*eigenvalues, *eigenvectors, *A, std::string(UPLO_ptr, UPLO_len), (bool)compute_v);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg__linalg_eigvals(tensor *out__, tensor self) {
+  PROTECT(
+    auto outputs__ = torch::_linalg_eigvals(*self);
+    out__[0] = new torch::Tensor(outputs__);
   )
 }
 
@@ -1624,6 +1731,13 @@ void atg__masked_softmax_out(tensor *out__, tensor out, tensor self, tensor mask
   )
 }
 
+void atg__mixed_dtypes_linear(tensor *out__, tensor input, tensor weight, tensor scale, tensor bias, char* activation_ptr, int activation_len) {
+  PROTECT(
+    auto outputs__ = torch::_mixed_dtypes_linear(*input, *weight, *scale, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), std::string(activation_ptr, activation_len));
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
 void atg__mkldnn_reshape(tensor *out__, tensor self, int64_t *shape_data, int shape_len) {
   PROTECT(
     auto outputs__ = torch::_mkldnn_reshape(*self, torch::IntArrayRef(shape_data, shape_len));
@@ -1661,14 +1775,14 @@ void atg__mkldnn_transpose_out(tensor *out__, tensor out, tensor self, int64_t d
 
 void atg__mps_convolution(tensor *out__, tensor self, tensor weight, tensor bias, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::_mps_convolution(*self, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::_mps_convolution(*self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__mps_convolution_out(tensor *out__, tensor out, tensor self, tensor weight, tensor bias, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::_mps_convolution_out(*out, *self, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::_mps_convolution_out(*out, *self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -1689,7 +1803,7 @@ void atg__mps_convolution_transpose_out(tensor *out__, tensor out, tensor self, 
 
 void atg__native_batch_norm_legit(tensor *out__, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, int training, double momentum, double eps) {
   PROTECT(
-    auto outputs__ = torch::_native_batch_norm_legit(*input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), *running_mean, *running_var, (bool)training, momentum, eps);
+    auto outputs__ = torch::_native_batch_norm_legit(*input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), *running_mean, *running_var, (bool)training, momentum, eps);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -1698,7 +1812,7 @@ void atg__native_batch_norm_legit(tensor *out__, tensor input, tensor weight, te
 
 void atg__native_batch_norm_legit_functional(tensor *out__, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, int training, double momentum, double eps) {
   PROTECT(
-    auto outputs__ = torch::_native_batch_norm_legit_functional(*input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), *running_mean, *running_var, (bool)training, momentum, eps);
+    auto outputs__ = torch::_native_batch_norm_legit_functional(*input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), *running_mean, *running_var, (bool)training, momentum, eps);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -1709,7 +1823,7 @@ void atg__native_batch_norm_legit_functional(tensor *out__, tensor input, tensor
 
 void atg__native_batch_norm_legit_no_stats(tensor *out__, tensor input, tensor weight, tensor bias, int training, double momentum, double eps) {
   PROTECT(
-    auto outputs__ = torch::_native_batch_norm_legit(*input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), (bool)training, momentum, eps);
+    auto outputs__ = torch::_native_batch_norm_legit(*input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (bool)training, momentum, eps);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -1718,7 +1832,7 @@ void atg__native_batch_norm_legit_no_stats(tensor *out__, tensor input, tensor w
 
 void atg__native_batch_norm_legit_no_stats_out(tensor *out__, tensor out, tensor save_mean, tensor save_invstd, tensor input, tensor weight, tensor bias, int training, double momentum, double eps) {
   PROTECT(
-    auto outputs__ = torch::_native_batch_norm_legit_out(*out, *save_mean, *save_invstd, *input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), (bool)training, momentum, eps);
+    auto outputs__ = torch::_native_batch_norm_legit_out(*out, *save_mean, *save_invstd, *input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (bool)training, momentum, eps);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -1727,7 +1841,7 @@ void atg__native_batch_norm_legit_no_stats_out(tensor *out__, tensor out, tensor
 
 void atg__native_batch_norm_legit_no_training(tensor *out__, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, double momentum, double eps) {
   PROTECT(
-    auto outputs__ = torch::_native_batch_norm_legit_no_training(*input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), *running_mean, *running_var, momentum, eps);
+    auto outputs__ = torch::_native_batch_norm_legit_no_training(*input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), *running_mean, *running_var, momentum, eps);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -1736,7 +1850,7 @@ void atg__native_batch_norm_legit_no_training(tensor *out__, tensor input, tenso
 
 void atg__native_batch_norm_legit_no_training_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, double momentum, double eps) {
   PROTECT(
-    auto outputs__ = torch::_native_batch_norm_legit_no_training_out(*out0, *out1, *out2, *input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), *running_mean, *running_var, momentum, eps);
+    auto outputs__ = torch::_native_batch_norm_legit_no_training_out(*out0, *out1, *out2, *input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), *running_mean, *running_var, momentum, eps);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -1745,7 +1859,7 @@ void atg__native_batch_norm_legit_no_training_out(tensor *out__, tensor out0, te
 
 void atg__native_batch_norm_legit_out(tensor *out__, tensor out, tensor save_mean, tensor save_invstd, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, int training, double momentum, double eps) {
   PROTECT(
-    auto outputs__ = torch::_native_batch_norm_legit_out(*out, *save_mean, *save_invstd, *input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), *running_mean, *running_var, (bool)training, momentum, eps);
+    auto outputs__ = torch::_native_batch_norm_legit_out(*out, *save_mean, *save_invstd, *input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), *running_mean, *running_var, (bool)training, momentum, eps);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -1754,7 +1868,7 @@ void atg__native_batch_norm_legit_out(tensor *out__, tensor out, tensor save_mea
 
 void atg__native_multi_head_attention(tensor *out__, tensor query, tensor key, tensor value, int64_t embed_dim, int64_t num_head, tensor qkv_weight, tensor qkv_bias, tensor proj_weight, tensor proj_bias, tensor mask, int need_weights, int average_attn_weights, int64_t mask_type_v, uint8_t mask_type_null) {
   PROTECT(
-    auto outputs__ = torch::_native_multi_head_attention(*query, *key, *value, embed_dim, num_head, *qkv_weight, *qkv_bias, *proj_weight, *proj_bias, (mask ? *mask : torch::Tensor()), (bool)need_weights, (bool)average_attn_weights, mask_type_null ? c10::nullopt : c10::optional<int64_t>(mask_type_v));
+    auto outputs__ = torch::_native_multi_head_attention(*query, *key, *value, embed_dim, num_head, *qkv_weight, *qkv_bias, *proj_weight, *proj_bias, (mask ? ::std::optional<at::Tensor>(*mask) : ::std::nullopt), (bool)need_weights, (bool)average_attn_weights, mask_type_null ? c10::nullopt : c10::optional<int64_t>(mask_type_v));
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -1762,7 +1876,7 @@ void atg__native_multi_head_attention(tensor *out__, tensor query, tensor key, t
 
 void atg__native_multi_head_attention_out(tensor *out__, tensor out0, tensor out1, tensor query, tensor key, tensor value, int64_t embed_dim, int64_t num_head, tensor qkv_weight, tensor qkv_bias, tensor proj_weight, tensor proj_bias, tensor mask, int need_weights, int average_attn_weights, int64_t mask_type_v, uint8_t mask_type_null) {
   PROTECT(
-    auto outputs__ = torch::_native_multi_head_attention_out(*out0, *out1, *query, *key, *value, embed_dim, num_head, *qkv_weight, *qkv_bias, *proj_weight, *proj_bias, (mask ? *mask : torch::Tensor()), (bool)need_weights, (bool)average_attn_weights, mask_type_null ? c10::nullopt : c10::optional<int64_t>(mask_type_v));
+    auto outputs__ = torch::_native_multi_head_attention_out(*out0, *out1, *query, *key, *value, embed_dim, num_head, *qkv_weight, *qkv_bias, *proj_weight, *proj_bias, (mask ? ::std::optional<at::Tensor>(*mask) : ::std::nullopt), (bool)need_weights, (bool)average_attn_weights, mask_type_null ? c10::nullopt : c10::optional<int64_t>(mask_type_v));
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -1786,6 +1900,14 @@ void atg__neg_view_copy_out(tensor *out__, tensor out, tensor self) {
   PROTECT(
     auto outputs__ = torch::_neg_view_copy_out(*out, *self);
     out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__nested_compute_contiguous_strides_offsets(tensor *out__, tensor nested_size) {
+  PROTECT(
+    auto outputs__ = torch::_nested_compute_contiguous_strides_offsets(*nested_size);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
 }
 
@@ -1813,6 +1935,55 @@ void atg__nested_from_padded_and_nested_example_out(tensor *out__, tensor out, t
 void atg__nested_from_padded_out(tensor *out__, tensor out, tensor padded, tensor cpu_nested_shape_example, int fuse_transform_0213) {
   PROTECT(
     auto outputs__ = torch::_nested_from_padded_out(*out, *padded, *cpu_nested_shape_example, (bool)fuse_transform_0213);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__nested_get_jagged_dummy(tensor *out__, tensor any) {
+  PROTECT(
+    auto outputs__ = torch::_nested_get_jagged_dummy(*any);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__nested_get_lengths(tensor *out__, tensor self) {
+  PROTECT(
+    auto outputs__ = torch::_nested_get_lengths(*self);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__nested_get_offsets(tensor *out__, tensor self) {
+  PROTECT(
+    auto outputs__ = torch::_nested_get_offsets(*self);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+int64_t atg__nested_get_ragged_idx(tensor self) {
+  PROTECT(
+    return torch::_nested_get_ragged_idx(*self);
+  )
+  return 0;
+}
+
+void atg__nested_get_values(tensor *out__, tensor self) {
+  PROTECT(
+    auto outputs__ = torch::_nested_get_values(*self);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__nested_get_values_copy(tensor *out__, tensor self) {
+  PROTECT(
+    auto outputs__ = torch::_nested_get_values_copy(*self);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__nested_get_values_copy_out(tensor *out__, tensor out, tensor self) {
+  PROTECT(
+    auto outputs__ = torch::_nested_get_values_copy_out(*out, *self);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -1852,6 +2023,27 @@ void atg__nested_view_from_buffer_copy_out(tensor *out__, tensor out, tensor sel
   )
 }
 
+void atg__nested_view_from_jagged(tensor *out__, tensor self, tensor offsets, tensor dummy, tensor lengths, int64_t ragged_idx) {
+  PROTECT(
+    auto outputs__ = torch::_nested_view_from_jagged(*self, *offsets, *dummy, (lengths ? ::std::optional<at::Tensor>(*lengths) : ::std::nullopt), ragged_idx);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__nested_view_from_jagged_copy(tensor *out__, tensor self, tensor offsets, tensor dummy, tensor lengths, int64_t ragged_idx) {
+  PROTECT(
+    auto outputs__ = torch::_nested_view_from_jagged_copy(*self, *offsets, *dummy, (lengths ? ::std::optional<at::Tensor>(*lengths) : ::std::nullopt), ragged_idx);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__nested_view_from_jagged_copy_out(tensor *out__, tensor out, tensor self, tensor offsets, tensor dummy, tensor lengths, int64_t ragged_idx) {
+  PROTECT(
+    auto outputs__ = torch::_nested_view_from_jagged_copy_out(*out, *self, *offsets, *dummy, (lengths ? ::std::optional<at::Tensor>(*lengths) : ::std::nullopt), ragged_idx);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
 void atg__new_zeros_with_same_feature_meta(tensor *out__, tensor self, tensor other, int64_t self_num_batch_dims) {
   PROTECT(
     auto outputs__ = torch::_new_zeros_with_same_feature_meta(*self, *other, self_num_batch_dims);
@@ -1875,14 +2067,14 @@ int atg__nnpack_available() {
 
 void atg__nnpack_spatial_convolution(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len) {
   PROTECT(
-    auto outputs__ = torch::_nnpack_spatial_convolution(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len));
+    auto outputs__ = torch::_nnpack_spatial_convolution(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__nnpack_spatial_convolution_out(tensor *out__, tensor out, tensor input, tensor weight, tensor bias, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len) {
   PROTECT(
-    auto outputs__ = torch::_nnpack_spatial_convolution_out(*out, *input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len));
+    auto outputs__ = torch::_nnpack_spatial_convolution_out(*out, *input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -1979,6 +2171,12 @@ void atg__prelu_kernel_backward(tensor *out__, tensor grad_output, tensor self, 
     auto outputs__ = torch::_prelu_kernel_backward(*grad_output, *self, *weight);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg__print(char* s_ptr, int s_len) {
+  PROTECT(
+    torch::_print(std::string(s_ptr, s_len));
   )
 }
 
@@ -2082,15 +2280,24 @@ void atg__saturate_weight_to_fp16(tensor *out__, tensor weight) {
 
 void atg__scaled_dot_product_attention_math(tensor *out__, tensor query, tensor key, tensor value, tensor attn_mask, double dropout_p, int is_causal, tensor dropout_mask, double scale_v, uint8_t scale_null) {
   PROTECT(
-    auto outputs__ = torch::_scaled_dot_product_attention_math(*query, *key, *value, (attn_mask ? *attn_mask : torch::Tensor()), dropout_p, (bool)is_causal, (dropout_mask ? *dropout_mask : torch::Tensor()), scale_null ? c10::nullopt : c10::optional<double>(scale_v));
+    auto outputs__ = torch::_scaled_dot_product_attention_math(*query, *key, *value, (attn_mask ? ::std::optional<at::Tensor>(*attn_mask) : ::std::nullopt), dropout_p, (bool)is_causal, (dropout_mask ? ::std::optional<at::Tensor>(*dropout_mask) : ::std::nullopt), scale_null ? c10::nullopt : c10::optional<double>(scale_v));
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
 }
 
+void atg__scaled_dot_product_cudnn_attention_backward(tensor *out__, tensor grad_out, tensor query, tensor key, tensor value, tensor out, tensor logsumexp, tensor cum_seq_q, tensor cum_seq_k, int64_t max_q, int64_t max_k, double dropout_p, int is_causal, tensor philox_seed, tensor philox_offset, double scale_v, uint8_t scale_null) {
+  PROTECT(
+    auto outputs__ = torch::_scaled_dot_product_cudnn_attention_backward(*grad_out, *query, *key, *value, *out, *logsumexp, *cum_seq_q, *cum_seq_k, max_q, max_k, dropout_p, (bool)is_causal, *philox_seed, *philox_offset, scale_null ? c10::nullopt : c10::optional<double>(scale_v));
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+    out__[2] = new torch::Tensor(std::get<2>(outputs__));
+  )
+}
+
 void atg__scaled_dot_product_efficient_attention(tensor *out__, tensor query, tensor key, tensor value, tensor attn_bias, int compute_log_sumexp, double dropout_p, int is_causal, double scale_v, uint8_t scale_null) {
   PROTECT(
-    auto outputs__ = torch::_scaled_dot_product_efficient_attention(*query, *key, *value, (attn_bias ? *attn_bias : torch::Tensor()), (bool)compute_log_sumexp, dropout_p, (bool)is_causal, scale_null ? c10::nullopt : c10::optional<double>(scale_v));
+    auto outputs__ = torch::_scaled_dot_product_efficient_attention(*query, *key, *value, (attn_bias ? ::std::optional<at::Tensor>(*attn_bias) : ::std::nullopt), (bool)compute_log_sumexp, dropout_p, (bool)is_causal, scale_null ? c10::nullopt : c10::optional<double>(scale_v));
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -2107,17 +2314,34 @@ void atg__scaled_dot_product_flash_attention_backward(tensor *out__, tensor grad
   )
 }
 
-void atg__scaled_mm(tensor *out__, tensor self, tensor mat2, tensor bias, int out_dtype, tensor scale_a, tensor scale_b, tensor scale_result) {
+void atg__scaled_dot_product_flash_attention_for_cpu(tensor *out__, tensor query, tensor key, tensor value, double dropout_p, int is_causal, tensor attn_mask, double scale_v, uint8_t scale_null) {
   PROTECT(
-    auto outputs__ = torch::_scaled_mm(*self, *mat2, (bias ? *bias : torch::Tensor()), out_dtype < 0 ? c10::nullopt : c10::optional<at::ScalarType>(at::ScalarType(out_dtype)), (scale_a ? *scale_a : torch::Tensor()), (scale_b ? *scale_b : torch::Tensor()), (scale_result ? *scale_result : torch::Tensor()));
+    auto outputs__ = torch::_scaled_dot_product_flash_attention_for_cpu(*query, *key, *value, dropout_p, (bool)is_causal, (attn_mask ? ::std::optional<at::Tensor>(*attn_mask) : ::std::nullopt), scale_null ? c10::nullopt : c10::optional<double>(scale_v));
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
 }
 
-void atg__scaled_mm_out(tensor *out__, tensor out, tensor out_amax, tensor self, tensor mat2, tensor bias, int out_dtype, tensor scale_a, tensor scale_b, tensor scale_result) {
+void atg__scaled_dot_product_flash_attention_for_cpu_backward(tensor *out__, tensor grad_out, tensor query, tensor key, tensor value, tensor out, tensor logsumexp, double dropout_p, int is_causal, tensor attn_mask, double scale_v, uint8_t scale_null) {
   PROTECT(
-    auto outputs__ = torch::_scaled_mm_out(*out, *out_amax, *self, *mat2, (bias ? *bias : torch::Tensor()), out_dtype < 0 ? c10::nullopt : c10::optional<at::ScalarType>(at::ScalarType(out_dtype)), (scale_a ? *scale_a : torch::Tensor()), (scale_b ? *scale_b : torch::Tensor()), (scale_result ? *scale_result : torch::Tensor()));
+    auto outputs__ = torch::_scaled_dot_product_flash_attention_for_cpu_backward(*grad_out, *query, *key, *value, *out, *logsumexp, dropout_p, (bool)is_causal, (attn_mask ? ::std::optional<at::Tensor>(*attn_mask) : ::std::nullopt), scale_null ? c10::nullopt : c10::optional<double>(scale_v));
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+    out__[2] = new torch::Tensor(std::get<2>(outputs__));
+  )
+}
+
+void atg__scaled_mm(tensor *out__, tensor self, tensor mat2, tensor bias, int out_dtype, tensor scale_a, tensor scale_b, tensor scale_result, int use_fast_accum) {
+  PROTECT(
+    auto outputs__ = torch::_scaled_mm(*self, *mat2, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), out_dtype < 0 ? c10::nullopt : c10::optional<at::ScalarType>(at::ScalarType(out_dtype)), (scale_a ? ::std::optional<at::Tensor>(*scale_a) : ::std::nullopt), (scale_b ? ::std::optional<at::Tensor>(*scale_b) : ::std::nullopt), (scale_result ? ::std::optional<at::Tensor>(*scale_result) : ::std::nullopt), (bool)use_fast_accum);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg__scaled_mm_out(tensor *out__, tensor out, tensor out_amax, tensor self, tensor mat2, tensor bias, int out_dtype, tensor scale_a, tensor scale_b, tensor scale_result, int use_fast_accum) {
+  PROTECT(
+    auto outputs__ = torch::_scaled_mm_out(*out, *out_amax, *self, *mat2, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), out_dtype < 0 ? c10::nullopt : c10::optional<at::ScalarType>(at::ScalarType(out_dtype)), (scale_a ? ::std::optional<at::Tensor>(*scale_a) : ::std::nullopt), (scale_b ? ::std::optional<at::Tensor>(*scale_b) : ::std::nullopt), (scale_result ? ::std::optional<at::Tensor>(*scale_result) : ::std::nullopt), (bool)use_fast_accum);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -2146,14 +2370,14 @@ void atg__scatter_reduce_two_out(tensor *out__, tensor out, tensor self, int64_t
 
 void atg__segment_reduce_backward(tensor *out__, tensor grad, tensor output, tensor data, char* reduce_ptr, int reduce_len, tensor lengths, tensor offsets, int64_t axis, scalar initial) {
   PROTECT(
-    auto outputs__ = torch::_segment_reduce_backward(*grad, *output, *data, std::string(reduce_ptr, reduce_len), (lengths ? *lengths : torch::Tensor()), (offsets ? *offsets : torch::Tensor()), axis, *initial);
+    auto outputs__ = torch::_segment_reduce_backward(*grad, *output, *data, std::string(reduce_ptr, reduce_len), (lengths ? ::std::optional<at::Tensor>(*lengths) : ::std::nullopt), (offsets ? ::std::optional<at::Tensor>(*offsets) : ::std::nullopt), axis, *initial);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__segment_reduce_backward_out(tensor *out__, tensor out, tensor grad, tensor output, tensor data, char* reduce_ptr, int reduce_len, tensor lengths, tensor offsets, int64_t axis, scalar initial) {
   PROTECT(
-    auto outputs__ = torch::_segment_reduce_backward_out(*out, *grad, *output, *data, std::string(reduce_ptr, reduce_len), (lengths ? *lengths : torch::Tensor()), (offsets ? *offsets : torch::Tensor()), axis, *initial);
+    auto outputs__ = torch::_segment_reduce_backward_out(*out, *grad, *output, *data, std::string(reduce_ptr, reduce_len), (lengths ? ::std::optional<at::Tensor>(*lengths) : ::std::nullopt), (offsets ? ::std::optional<at::Tensor>(*offsets) : ::std::nullopt), axis, *initial);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -2283,6 +2507,13 @@ void atg__sparse_bsr_tensor_unsafe(tensor *out__, tensor crow_indices, tensor co
 void atg__sparse_compressed_tensor_unsafe(tensor *out__, tensor compressed_indices, tensor plain_indices, tensor values, int64_t *size_data, int size_len, int options_kind, int options_device) {
   PROTECT(
     auto outputs__ = torch::_sparse_compressed_tensor_unsafe(*compressed_indices, *plain_indices, *values, torch::IntArrayRef(size_data, size_len), at::device(device_of_int(options_device)).dtype(at::ScalarType(options_kind)));
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__sparse_compressed_tensor_with_dims(tensor *out__, int64_t nnz, int64_t dense_dim, int64_t *size_data, int size_len, int64_t *blocksize_data, int blocksize_len, int index_dtype, int options_kind, int options_device) {
+  PROTECT(
+    auto outputs__ = torch::_sparse_compressed_tensor_with_dims(nnz, dense_dim, torch::IntArrayRef(size_data, size_len), torch::IntArrayRef(blocksize_data, blocksize_len), at::ScalarType(index_dtype), at::device(device_of_int(options_device)).dtype(at::ScalarType(options_kind)));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -2435,10 +2666,43 @@ void atg__sparse_mm_reduce_impl(tensor *out__, tensor self, tensor other, char* 
   )
 }
 
-void atg__sparse_semi_structured_linear(tensor *out__, tensor input, tensor weight, tensor meta, tensor bias, char* activation_ptr, int activation_len) {
+void atg__sparse_semi_structured_apply(tensor *out__, tensor input, tensor thread_masks) {
   PROTECT(
-    auto outputs__ = torch::_sparse_semi_structured_linear(*input, *weight, *meta, (bias ? *bias : torch::Tensor()), std::string(activation_ptr, activation_len));
+    auto outputs__ = torch::_sparse_semi_structured_apply(*input, *thread_masks);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg__sparse_semi_structured_apply_dense(tensor *out__, tensor input, tensor thread_masks) {
+  PROTECT(
+    auto outputs__ = torch::_sparse_semi_structured_apply_dense(*input, *thread_masks);
     out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__sparse_semi_structured_linear(tensor *out__, tensor input, tensor weight, tensor meta, tensor bias, char* activation_ptr, int activation_len, int out_dtype) {
+  PROTECT(
+    auto outputs__ = torch::_sparse_semi_structured_linear(*input, *weight, *meta, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), std::string(activation_ptr, activation_len), out_dtype < 0 ? c10::nullopt : c10::optional<at::ScalarType>(at::ScalarType(out_dtype)));
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__sparse_semi_structured_mm(tensor *out__, tensor mat1, tensor mat1_meta, tensor mat2, int out_dtype) {
+  PROTECT(
+    auto outputs__ = torch::_sparse_semi_structured_mm(*mat1, *mat1_meta, *mat2, out_dtype < 0 ? c10::nullopt : c10::optional<at::ScalarType>(at::ScalarType(out_dtype)));
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__sparse_semi_structured_tile(tensor *out__, tensor input, char* algorithm_ptr, int algorithm_len, int use_cutlass) {
+  PROTECT(
+    auto outputs__ = torch::_sparse_semi_structured_tile(*input, std::string(algorithm_ptr, algorithm_len), (bool)use_cutlass);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+    out__[2] = new torch::Tensor(std::get<2>(outputs__));
+    out__[3] = new torch::Tensor(std::get<3>(outputs__));
+    out__[4] = new torch::Tensor(std::get<4>(outputs__));
   )
 }
 
@@ -2715,6 +2979,13 @@ void atg__test_optional_intlist_out(tensor *out__, tensor out, tensor values, in
   )
 }
 
+void atg__test_parallel_materialize(tensor *out__, tensor self, int64_t num_parallel, int skip_first) {
+  PROTECT(
+    auto outputs__ = torch::_test_parallel_materialize(*self, num_parallel, (bool)skip_first);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
 void atg__test_serialization_subcmul(tensor *out__, tensor self, tensor other) {
   PROTECT(
     auto outputs__ = torch::_test_serialization_subcmul(*self, *other);
@@ -2896,14 +3167,14 @@ void atg__transform_bias_rescale_qkv_out(tensor *out__, tensor out0, tensor out1
 
 void atg__transformer_encoder_layer_fwd(tensor *out__, tensor src, int64_t embed_dim, int64_t num_heads, tensor qkv_weight, tensor qkv_bias, tensor proj_weight, tensor proj_bias, int use_gelu, int norm_first, double eps, tensor norm_weight_1, tensor norm_bias_1, tensor norm_weight_2, tensor norm_bias_2, tensor ffn_weight_1, tensor ffn_bias_1, tensor ffn_weight_2, tensor ffn_bias_2, tensor mask, int64_t mask_type_v, uint8_t mask_type_null) {
   PROTECT(
-    auto outputs__ = torch::_transformer_encoder_layer_fwd(*src, embed_dim, num_heads, *qkv_weight, *qkv_bias, *proj_weight, *proj_bias, (bool)use_gelu, (bool)norm_first, eps, *norm_weight_1, *norm_bias_1, *norm_weight_2, *norm_bias_2, *ffn_weight_1, *ffn_bias_1, *ffn_weight_2, *ffn_bias_2, (mask ? *mask : torch::Tensor()), mask_type_null ? c10::nullopt : c10::optional<int64_t>(mask_type_v));
+    auto outputs__ = torch::_transformer_encoder_layer_fwd(*src, embed_dim, num_heads, *qkv_weight, *qkv_bias, *proj_weight, *proj_bias, (bool)use_gelu, (bool)norm_first, eps, *norm_weight_1, *norm_bias_1, *norm_weight_2, *norm_bias_2, *ffn_weight_1, *ffn_bias_1, *ffn_weight_2, *ffn_bias_2, (mask ? ::std::optional<at::Tensor>(*mask) : ::std::nullopt), mask_type_null ? c10::nullopt : c10::optional<int64_t>(mask_type_v));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__transformer_encoder_layer_fwd_out(tensor *out__, tensor out, tensor src, int64_t embed_dim, int64_t num_heads, tensor qkv_weight, tensor qkv_bias, tensor proj_weight, tensor proj_bias, int use_gelu, int norm_first, double eps, tensor norm_weight_1, tensor norm_bias_1, tensor norm_weight_2, tensor norm_bias_2, tensor ffn_weight_1, tensor ffn_bias_1, tensor ffn_weight_2, tensor ffn_bias_2, tensor mask, int64_t mask_type_v, uint8_t mask_type_null) {
   PROTECT(
-    auto outputs__ = torch::_transformer_encoder_layer_fwd_out(*out, *src, embed_dim, num_heads, *qkv_weight, *qkv_bias, *proj_weight, *proj_bias, (bool)use_gelu, (bool)norm_first, eps, *norm_weight_1, *norm_bias_1, *norm_weight_2, *norm_bias_2, *ffn_weight_1, *ffn_bias_1, *ffn_weight_2, *ffn_bias_2, (mask ? *mask : torch::Tensor()), mask_type_null ? c10::nullopt : c10::optional<int64_t>(mask_type_v));
+    auto outputs__ = torch::_transformer_encoder_layer_fwd_out(*out, *src, embed_dim, num_heads, *qkv_weight, *qkv_bias, *proj_weight, *proj_bias, (bool)use_gelu, (bool)norm_first, eps, *norm_weight_1, *norm_bias_1, *norm_weight_2, *norm_bias_2, *ffn_weight_1, *ffn_bias_1, *ffn_weight_2, *ffn_bias_2, (mask ? ::std::optional<at::Tensor>(*mask) : ::std::nullopt), mask_type_null ? c10::nullopt : c10::optional<int64_t>(mask_type_v));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -2924,14 +3195,14 @@ void atg__trilinear_out(tensor *out__, tensor out, tensor i1, tensor i2, tensor 
 
 void atg__triton_multi_head_attention(tensor *out__, tensor query, tensor key, tensor value, int64_t embed_dim, int64_t num_head, tensor qkv_weight, tensor qkv_bias, tensor proj_weight, tensor proj_bias, tensor mask) {
   PROTECT(
-    auto outputs__ = torch::_triton_multi_head_attention(*query, *key, *value, embed_dim, num_head, *qkv_weight, *qkv_bias, *proj_weight, *proj_bias, (mask ? *mask : torch::Tensor()));
+    auto outputs__ = torch::_triton_multi_head_attention(*query, *key, *value, embed_dim, num_head, *qkv_weight, *qkv_bias, *proj_weight, *proj_bias, (mask ? ::std::optional<at::Tensor>(*mask) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg__triton_multi_head_attention_out(tensor *out__, tensor out, tensor query, tensor key, tensor value, int64_t embed_dim, int64_t num_head, tensor qkv_weight, tensor qkv_bias, tensor proj_weight, tensor proj_bias, tensor mask) {
   PROTECT(
-    auto outputs__ = torch::_triton_multi_head_attention_out(*out, *query, *key, *value, embed_dim, num_head, *qkv_weight, *qkv_bias, *proj_weight, *proj_bias, (mask ? *mask : torch::Tensor()));
+    auto outputs__ = torch::_triton_multi_head_attention_out(*out, *query, *key, *value, embed_dim, num_head, *qkv_weight, *qkv_bias, *proj_weight, *proj_bias, (mask ? ::std::optional<at::Tensor>(*mask) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -3278,6 +3549,20 @@ int64_t atg__version(tensor self) {
     return self->_version();
   )
   return 0;
+}
+
+void atg__weight_int4pack_mm(tensor *out__, tensor self, tensor mat2, int64_t qGroupSize, tensor qScaleAndZeros) {
+  PROTECT(
+    auto outputs__ = torch::_weight_int4pack_mm(*self, *mat2, qGroupSize, *qScaleAndZeros);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg__weight_int8pack_mm(tensor *out__, tensor self, tensor mat2, tensor scales) {
+  PROTECT(
+    auto outputs__ = torch::_weight_int8pack_mm(*self, *mat2, *scales);
+    out__[0] = new torch::Tensor(outputs__);
+  )
 }
 
 void atg__weight_norm(tensor *out__, tensor v, tensor g, int64_t dim) {
@@ -3779,6 +4064,20 @@ void atg_all_dim(tensor *out__, tensor self, int64_t dim, int keepdim) {
   )
 }
 
+void atg_all_dims(tensor *out__, tensor self, int64_t *dim_data, int dim_len, int keepdim) {
+  PROTECT(
+    auto outputs__ = torch::all(*self, dim_data == nullptr ? c10::nullopt : c10::optional<torch::IntArrayRef>(torch::IntArrayRef(dim_data, dim_len)), (bool)keepdim);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_all_dims_out(tensor *out__, tensor out, tensor self, int64_t *dim_data, int dim_len, int keepdim) {
+  PROTECT(
+    auto outputs__ = torch::all_out(*out, *self, dim_data == nullptr ? c10::nullopt : c10::optional<torch::IntArrayRef>(torch::IntArrayRef(dim_data, dim_len)), (bool)keepdim);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
 void atg_all_out(tensor *out__, tensor out, tensor self, int64_t dim, int keepdim) {
   PROTECT(
     auto outputs__ = torch::all_out(*out, *self, dim, (bool)keepdim);
@@ -3882,6 +4181,20 @@ void atg_any_all_out(tensor *out__, tensor out, tensor self) {
 void atg_any_dim(tensor *out__, tensor self, int64_t dim, int keepdim) {
   PROTECT(
     auto outputs__ = torch::any(*self, dim, (bool)keepdim);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_any_dims(tensor *out__, tensor self, int64_t *dim_data, int dim_len, int keepdim) {
+  PROTECT(
+    auto outputs__ = torch::any(*self, dim_data == nullptr ? c10::nullopt : c10::optional<torch::IntArrayRef>(torch::IntArrayRef(dim_data, dim_len)), (bool)keepdim);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_any_dims_out(tensor *out__, tensor out, tensor self, int64_t *dim_data, int dim_len, int keepdim) {
+  PROTECT(
+    auto outputs__ = torch::any_out(*out, *self, dim_data == nullptr ? c10::nullopt : c10::optional<torch::IntArrayRef>(torch::IntArrayRef(dim_data, dim_len)), (bool)keepdim);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -4438,28 +4751,28 @@ void atg_bartlett_window_periodic_out(tensor *out__, tensor out, int64_t window_
 
 void atg_batch_norm(tensor *out__, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, int training, double momentum, double eps, int cudnn_enabled) {
   PROTECT(
-    auto outputs__ = torch::batch_norm(*input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), (bool)training, momentum, eps, (bool)cudnn_enabled);
+    auto outputs__ = torch::batch_norm(*input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), (bool)training, momentum, eps, (bool)cudnn_enabled);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_batch_norm_backward_elemt(tensor *out__, tensor grad_out, tensor input, tensor mean, tensor invstd, tensor weight, tensor sum_dy, tensor sum_dy_xmu, tensor count) {
   PROTECT(
-    auto outputs__ = torch::batch_norm_backward_elemt(*grad_out, *input, *mean, *invstd, (weight ? *weight : torch::Tensor()), *sum_dy, *sum_dy_xmu, *count);
+    auto outputs__ = torch::batch_norm_backward_elemt(*grad_out, *input, *mean, *invstd, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), *sum_dy, *sum_dy_xmu, *count);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_batch_norm_backward_elemt_out(tensor *out__, tensor out, tensor grad_out, tensor input, tensor mean, tensor invstd, tensor weight, tensor sum_dy, tensor sum_dy_xmu, tensor count) {
   PROTECT(
-    auto outputs__ = torch::batch_norm_backward_elemt_out(*out, *grad_out, *input, *mean, *invstd, (weight ? *weight : torch::Tensor()), *sum_dy, *sum_dy_xmu, *count);
+    auto outputs__ = torch::batch_norm_backward_elemt_out(*out, *grad_out, *input, *mean, *invstd, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), *sum_dy, *sum_dy_xmu, *count);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_batch_norm_backward_reduce(tensor *out__, tensor grad_out, tensor input, tensor mean, tensor invstd, tensor weight, int input_g, int weight_g, int bias_g) {
   PROTECT(
-    auto outputs__ = torch::batch_norm_backward_reduce(*grad_out, *input, *mean, *invstd, (weight ? *weight : torch::Tensor()), (bool)input_g, (bool)weight_g, (bool)bias_g);
+    auto outputs__ = torch::batch_norm_backward_reduce(*grad_out, *input, *mean, *invstd, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bool)input_g, (bool)weight_g, (bool)bias_g);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -4469,7 +4782,7 @@ void atg_batch_norm_backward_reduce(tensor *out__, tensor grad_out, tensor input
 
 void atg_batch_norm_backward_reduce_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor out3, tensor grad_out, tensor input, tensor mean, tensor invstd, tensor weight, int input_g, int weight_g, int bias_g) {
   PROTECT(
-    auto outputs__ = torch::batch_norm_backward_reduce_out(*out0, *out1, *out2, *out3, *grad_out, *input, *mean, *invstd, (weight ? *weight : torch::Tensor()), (bool)input_g, (bool)weight_g, (bool)bias_g);
+    auto outputs__ = torch::batch_norm_backward_reduce_out(*out0, *out1, *out2, *out3, *grad_out, *input, *mean, *invstd, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bool)input_g, (bool)weight_g, (bool)bias_g);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -4479,21 +4792,21 @@ void atg_batch_norm_backward_reduce_out(tensor *out__, tensor out0, tensor out1,
 
 void atg_batch_norm_elemt(tensor *out__, tensor input, tensor weight, tensor bias, tensor mean, tensor invstd, double eps) {
   PROTECT(
-    auto outputs__ = torch::batch_norm_elemt(*input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), *mean, *invstd, eps);
+    auto outputs__ = torch::batch_norm_elemt(*input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), *mean, *invstd, eps);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_batch_norm_elemt_out(tensor *out__, tensor out, tensor input, tensor weight, tensor bias, tensor mean, tensor invstd, double eps) {
   PROTECT(
-    auto outputs__ = torch::batch_norm_elemt_out(*out, *input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), *mean, *invstd, eps);
+    auto outputs__ = torch::batch_norm_elemt_out(*out, *input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), *mean, *invstd, eps);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_batch_norm_gather_stats(tensor *out__, tensor input, tensor mean, tensor invstd, tensor running_mean, tensor running_var, double momentum, double eps, int64_t count) {
   PROTECT(
-    auto outputs__ = torch::batch_norm_gather_stats(*input, *mean, *invstd, (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), momentum, eps, count);
+    auto outputs__ = torch::batch_norm_gather_stats(*input, *mean, *invstd, (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), momentum, eps, count);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -4501,7 +4814,7 @@ void atg_batch_norm_gather_stats(tensor *out__, tensor input, tensor mean, tenso
 
 void atg_batch_norm_gather_stats_out(tensor *out__, tensor out0, tensor out1, tensor input, tensor mean, tensor invstd, tensor running_mean, tensor running_var, double momentum, double eps, int64_t count) {
   PROTECT(
-    auto outputs__ = torch::batch_norm_gather_stats_out(*out0, *out1, *input, *mean, *invstd, (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), momentum, eps, count);
+    auto outputs__ = torch::batch_norm_gather_stats_out(*out0, *out1, *input, *mean, *invstd, (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), momentum, eps, count);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -4509,7 +4822,7 @@ void atg_batch_norm_gather_stats_out(tensor *out__, tensor out0, tensor out1, te
 
 void atg_batch_norm_gather_stats_with_counts(tensor *out__, tensor input, tensor mean, tensor invstd, tensor running_mean, tensor running_var, double momentum, double eps, tensor counts) {
   PROTECT(
-    auto outputs__ = torch::batch_norm_gather_stats_with_counts(*input, *mean, *invstd, (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), momentum, eps, *counts);
+    auto outputs__ = torch::batch_norm_gather_stats_with_counts(*input, *mean, *invstd, (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), momentum, eps, *counts);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -4517,7 +4830,7 @@ void atg_batch_norm_gather_stats_with_counts(tensor *out__, tensor input, tensor
 
 void atg_batch_norm_gather_stats_with_counts_out(tensor *out__, tensor out0, tensor out1, tensor input, tensor mean, tensor invstd, tensor running_mean, tensor running_var, double momentum, double eps, tensor counts) {
   PROTECT(
-    auto outputs__ = torch::batch_norm_gather_stats_with_counts_out(*out0, *out1, *input, *mean, *invstd, (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), momentum, eps, *counts);
+    auto outputs__ = torch::batch_norm_gather_stats_with_counts_out(*out0, *out1, *input, *mean, *invstd, (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), momentum, eps, *counts);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -4541,7 +4854,7 @@ void atg_batch_norm_stats_out(tensor *out__, tensor out0, tensor out1, tensor in
 
 void atg_batch_norm_update_stats(tensor *out__, tensor input, tensor running_mean, tensor running_var, double momentum) {
   PROTECT(
-    auto outputs__ = torch::batch_norm_update_stats(*input, (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), momentum);
+    auto outputs__ = torch::batch_norm_update_stats(*input, (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), momentum);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -4549,7 +4862,7 @@ void atg_batch_norm_update_stats(tensor *out__, tensor input, tensor running_mea
 
 void atg_batch_norm_update_stats_out(tensor *out__, tensor out0, tensor out1, tensor input, tensor running_mean, tensor running_var, double momentum) {
   PROTECT(
-    auto outputs__ = torch::batch_norm_update_stats_out(*out0, *out1, *input, (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), momentum);
+    auto outputs__ = torch::batch_norm_update_stats_out(*out0, *out1, *input, (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), momentum);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -4592,63 +4905,63 @@ void atg_bernoulli_tensor(tensor *out__, tensor self, tensor p) {
 
 void atg_bilinear(tensor *out__, tensor input1, tensor input2, tensor weight, tensor bias) {
   PROTECT(
-    auto outputs__ = torch::bilinear(*input1, *input2, *weight, (bias ? *bias : torch::Tensor()));
+    auto outputs__ = torch::bilinear(*input1, *input2, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_binary_cross_entropy(tensor *out__, tensor self, tensor target, tensor weight, int64_t reduction) {
   PROTECT(
-    auto outputs__ = torch::binary_cross_entropy(*self, *target, (weight ? *weight : torch::Tensor()), reduction);
+    auto outputs__ = torch::binary_cross_entropy(*self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_binary_cross_entropy_backward(tensor *out__, tensor grad_output, tensor self, tensor target, tensor weight, int64_t reduction) {
   PROTECT(
-    auto outputs__ = torch::binary_cross_entropy_backward(*grad_output, *self, *target, (weight ? *weight : torch::Tensor()), reduction);
+    auto outputs__ = torch::binary_cross_entropy_backward(*grad_output, *self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_binary_cross_entropy_backward_grad_input(tensor *out__, tensor grad_input, tensor grad_output, tensor self, tensor target, tensor weight, int64_t reduction) {
   PROTECT(
-    auto outputs__ = torch::binary_cross_entropy_backward_out(*grad_input, *grad_output, *self, *target, (weight ? *weight : torch::Tensor()), reduction);
+    auto outputs__ = torch::binary_cross_entropy_backward_out(*grad_input, *grad_output, *self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_binary_cross_entropy_out(tensor *out__, tensor out, tensor self, tensor target, tensor weight, int64_t reduction) {
   PROTECT(
-    auto outputs__ = torch::binary_cross_entropy_out(*out, *self, *target, (weight ? *weight : torch::Tensor()), reduction);
+    auto outputs__ = torch::binary_cross_entropy_out(*out, *self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_binary_cross_entropy_with_logits(tensor *out__, tensor self, tensor target, tensor weight, tensor pos_weight, int64_t reduction) {
   PROTECT(
-    auto outputs__ = torch::binary_cross_entropy_with_logits(*self, *target, (weight ? *weight : torch::Tensor()), (pos_weight ? *pos_weight : torch::Tensor()), reduction);
+    auto outputs__ = torch::binary_cross_entropy_with_logits(*self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (pos_weight ? ::std::optional<at::Tensor>(*pos_weight) : ::std::nullopt), reduction);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_binary_cross_entropy_with_logits_out(tensor *out__, tensor out, tensor self, tensor target, tensor weight, tensor pos_weight, int64_t reduction) {
   PROTECT(
-    auto outputs__ = torch::binary_cross_entropy_with_logits_out(*out, *self, *target, (weight ? *weight : torch::Tensor()), (pos_weight ? *pos_weight : torch::Tensor()), reduction);
+    auto outputs__ = torch::binary_cross_entropy_with_logits_out(*out, *self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (pos_weight ? ::std::optional<at::Tensor>(*pos_weight) : ::std::nullopt), reduction);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_bincount(tensor *out__, tensor self, tensor weights, int64_t minlength) {
   PROTECT(
-    auto outputs__ = torch::bincount(*self, (weights ? *weights : torch::Tensor()), minlength);
+    auto outputs__ = torch::bincount(*self, (weights ? ::std::optional<at::Tensor>(*weights) : ::std::nullopt), minlength);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_bincount_out(tensor *out__, tensor out, tensor self, tensor weights, int64_t minlength) {
   PROTECT(
-    auto outputs__ = torch::bincount_out(*out, *self, (weights ? *weights : torch::Tensor()), minlength);
+    auto outputs__ = torch::bincount_out(*out, *self, (weights ? ::std::optional<at::Tensor>(*weights) : ::std::nullopt), minlength);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -5072,9 +5385,9 @@ void atg_bucketize_tensor_out(tensor *out__, tensor out, tensor self, tensor bou
   )
 }
 
-int atg_can_cast(int from, int to) {
+int atg_can_cast(int from_, int to) {
   PROTECT(
-    return torch::can_cast(at::ScalarType(from), at::ScalarType(to));
+    return torch::can_cast(at::ScalarType(from_), at::ScalarType(to));
   )
   return 0;
 }
@@ -5396,21 +5709,21 @@ void atg_clamp_out(tensor *out__, tensor out, tensor self, scalar min, scalar ma
 
 void atg_clamp_tensor(tensor *out__, tensor self, tensor min, tensor max) {
   PROTECT(
-    auto outputs__ = torch::clamp(*self, (min ? *min : torch::Tensor()), (max ? *max : torch::Tensor()));
+    auto outputs__ = torch::clamp(*self, (min ? ::std::optional<at::Tensor>(*min) : ::std::nullopt), (max ? ::std::optional<at::Tensor>(*max) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_clamp_tensor_(tensor *out__, tensor self, tensor min, tensor max) {
   PROTECT(
-    auto outputs__ = torch::clamp_(*self, (min ? *min : torch::Tensor()), (max ? *max : torch::Tensor()));
+    auto outputs__ = torch::clamp_(*self, (min ? ::std::optional<at::Tensor>(*min) : ::std::nullopt), (max ? ::std::optional<at::Tensor>(*max) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_clamp_tensor_out(tensor *out__, tensor out, tensor self, tensor min, tensor max) {
   PROTECT(
-    auto outputs__ = torch::clamp_out(*out, *self, (min ? *min : torch::Tensor()), (max ? *max : torch::Tensor()));
+    auto outputs__ = torch::clamp_out(*out, *self, (min ? ::std::optional<at::Tensor>(*min) : ::std::nullopt), (max ? ::std::optional<at::Tensor>(*max) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -5438,21 +5751,21 @@ void atg_clip_out(tensor *out__, tensor out, tensor self, scalar min, scalar max
 
 void atg_clip_tensor(tensor *out__, tensor self, tensor min, tensor max) {
   PROTECT(
-    auto outputs__ = torch::clip(*self, (min ? *min : torch::Tensor()), (max ? *max : torch::Tensor()));
+    auto outputs__ = torch::clip(*self, (min ? ::std::optional<at::Tensor>(*min) : ::std::nullopt), (max ? ::std::optional<at::Tensor>(*max) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_clip_tensor_(tensor *out__, tensor self, tensor min, tensor max) {
   PROTECT(
-    auto outputs__ = torch::clip_(*self, (min ? *min : torch::Tensor()), (max ? *max : torch::Tensor()));
+    auto outputs__ = torch::clip_(*self, (min ? ::std::optional<at::Tensor>(*min) : ::std::nullopt), (max ? ::std::optional<at::Tensor>(*max) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_clip_tensor_out(tensor *out__, tensor out, tensor self, tensor min, tensor max) {
   PROTECT(
-    auto outputs__ = torch::clip_out(*out, *self, (min ? *min : torch::Tensor()), (max ? *max : torch::Tensor()));
+    auto outputs__ = torch::clip_out(*out, *self, (min ? ::std::optional<at::Tensor>(*min) : ::std::nullopt), (max ? ::std::optional<at::Tensor>(*max) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -5620,56 +5933,56 @@ void atg_contiguous(tensor *out__, tensor self) {
 
 void atg_conv1d(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::conv1d(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::conv1d(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_conv1d_padding(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, char* padding_ptr, int padding_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::conv1d(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), std::string(padding_ptr, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::conv1d(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), std::string(padding_ptr, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_conv2d(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::conv2d(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::conv2d(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_conv2d_padding(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, char* padding_ptr, int padding_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::conv2d(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), std::string(padding_ptr, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::conv2d(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), std::string(padding_ptr, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_conv3d(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::conv3d(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::conv3d(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_conv3d_padding(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, char* padding_ptr, int padding_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::conv3d(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), std::string(padding_ptr, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::conv3d(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), std::string(padding_ptr, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_conv_depthwise3d(tensor *out__, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::conv_depthwise3d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::conv_depthwise3d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_conv_depthwise3d_out(tensor *out__, tensor out, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::conv_depthwise3d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::conv_depthwise3d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -5699,49 +6012,49 @@ void atg_conv_tbc_out(tensor *out__, tensor out, tensor self, tensor weight, ten
 
 void atg_conv_transpose1d(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *output_padding_data, int output_padding_len, int64_t groups, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::conv_transpose1d(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), groups, torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::conv_transpose1d(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), groups, torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_conv_transpose2d(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *output_padding_data, int output_padding_len, int64_t groups, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::conv_transpose2d(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), groups, torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::conv_transpose2d(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), groups, torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_conv_transpose3d(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *output_padding_data, int output_padding_len, int64_t groups, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::conv_transpose3d(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), groups, torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::conv_transpose3d(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), groups, torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_convolution(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int transposed, int64_t *output_padding_data, int output_padding_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::convolution(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups);
+    auto outputs__ = torch::convolution(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_convolution_out(tensor *out__, tensor out, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int transposed, int64_t *output_padding_data, int output_padding_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::convolution_out(*out, *input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups);
+    auto outputs__ = torch::convolution_out(*out, *input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_convolution_overrideable(tensor *out__, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int transposed, int64_t *output_padding_data, int output_padding_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::convolution_overrideable(*input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups);
+    auto outputs__ = torch::convolution_overrideable(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_convolution_overrideable_out(tensor *out__, tensor out, tensor input, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int transposed, int64_t *output_padding_data, int output_padding_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::convolution_overrideable_out(*out, *input, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups);
+    auto outputs__ = torch::convolution_overrideable_out(*out, *input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), (bool)transposed, torch::IntArrayRef(output_padding_data, output_padding_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -5902,7 +6215,7 @@ void atg_count_nonzero_out(tensor *out__, tensor out, tensor self, int64_t dim_v
 
 void atg_cov(tensor *out__, tensor self, int64_t correction, tensor fweights, tensor aweights) {
   PROTECT(
-    auto outputs__ = torch::cov(*self, correction, (fweights ? *fweights : torch::Tensor()), (aweights ? *aweights : torch::Tensor()));
+    auto outputs__ = torch::cov(*self, correction, (fweights ? ::std::optional<at::Tensor>(*fweights) : ::std::nullopt), (aweights ? ::std::optional<at::Tensor>(*aweights) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -5916,7 +6229,7 @@ void atg_cross(tensor *out__, tensor self, tensor other, int64_t dim_v, uint8_t 
 
 void atg_cross_entropy_loss(tensor *out__, tensor self, tensor target, tensor weight, int64_t reduction, int64_t ignore_index, double label_smoothing) {
   PROTECT(
-    auto outputs__ = torch::cross_entropy_loss(*self, *target, (weight ? *weight : torch::Tensor()), reduction, ignore_index, label_smoothing);
+    auto outputs__ = torch::cross_entropy_loss(*self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction, ignore_index, label_smoothing);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -5993,7 +6306,7 @@ void atg_cudnn_affine_grid_generator_out(tensor *out__, tensor out, tensor theta
 
 void atg_cudnn_batch_norm(tensor *out__, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, int training, double exponential_average_factor, double epsilon) {
   PROTECT(
-    auto outputs__ = torch::cudnn_batch_norm(*input, *weight, (bias ? *bias : torch::Tensor()), (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), (bool)training, exponential_average_factor, epsilon);
+    auto outputs__ = torch::cudnn_batch_norm(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), (bool)training, exponential_average_factor, epsilon);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -6003,7 +6316,7 @@ void atg_cudnn_batch_norm(tensor *out__, tensor input, tensor weight, tensor bia
 
 void atg_cudnn_batch_norm_backward(tensor *out__, tensor input, tensor grad_output, tensor weight, tensor running_mean, tensor running_var, tensor save_mean, tensor save_var, double epsilon, tensor reserveSpace) {
   PROTECT(
-    auto outputs__ = torch::cudnn_batch_norm_backward(*input, *grad_output, *weight, (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), (save_mean ? *save_mean : torch::Tensor()), (save_var ? *save_var : torch::Tensor()), epsilon, *reserveSpace);
+    auto outputs__ = torch::cudnn_batch_norm_backward(*input, *grad_output, *weight, (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), (save_mean ? ::std::optional<at::Tensor>(*save_mean) : ::std::nullopt), (save_var ? ::std::optional<at::Tensor>(*save_var) : ::std::nullopt), epsilon, *reserveSpace);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -6012,7 +6325,7 @@ void atg_cudnn_batch_norm_backward(tensor *out__, tensor input, tensor grad_outp
 
 void atg_cudnn_batch_norm_backward_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor input, tensor grad_output, tensor weight, tensor running_mean, tensor running_var, tensor save_mean, tensor save_var, double epsilon, tensor reserveSpace) {
   PROTECT(
-    auto outputs__ = torch::cudnn_batch_norm_backward_out(*out0, *out1, *out2, *input, *grad_output, *weight, (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), (save_mean ? *save_mean : torch::Tensor()), (save_var ? *save_var : torch::Tensor()), epsilon, *reserveSpace);
+    auto outputs__ = torch::cudnn_batch_norm_backward_out(*out0, *out1, *out2, *input, *grad_output, *weight, (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), (save_mean ? ::std::optional<at::Tensor>(*save_mean) : ::std::nullopt), (save_var ? ::std::optional<at::Tensor>(*save_var) : ::std::nullopt), epsilon, *reserveSpace);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -6021,7 +6334,7 @@ void atg_cudnn_batch_norm_backward_out(tensor *out__, tensor out0, tensor out1, 
 
 void atg_cudnn_batch_norm_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor out3, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, int training, double exponential_average_factor, double epsilon) {
   PROTECT(
-    auto outputs__ = torch::cudnn_batch_norm_out(*out0, *out1, *out2, *out3, *input, *weight, (bias ? *bias : torch::Tensor()), (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), (bool)training, exponential_average_factor, epsilon);
+    auto outputs__ = torch::cudnn_batch_norm_out(*out0, *out1, *out2, *out3, *input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), (bool)training, exponential_average_factor, epsilon);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -6038,14 +6351,14 @@ void atg_cudnn_convolution(tensor *out__, tensor self, tensor weight, int64_t *p
 
 void atg_cudnn_convolution_add_relu(tensor *out__, tensor self, tensor weight, tensor z, scalar alpha, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::cudnn_convolution_add_relu(*self, *weight, *z, *alpha, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::cudnn_convolution_add_relu(*self, *weight, *z, *alpha, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_cudnn_convolution_add_relu_out(tensor *out__, tensor out, tensor self, tensor weight, tensor z, scalar alpha, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::cudnn_convolution_add_relu_out(*out, *self, *weight, *z, *alpha, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::cudnn_convolution_add_relu_out(*out, *self, *weight, *z, *alpha, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -6059,14 +6372,14 @@ void atg_cudnn_convolution_out(tensor *out__, tensor out, tensor self, tensor we
 
 void atg_cudnn_convolution_relu(tensor *out__, tensor self, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::cudnn_convolution_relu(*self, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::cudnn_convolution_relu(*self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_cudnn_convolution_relu_out(tensor *out__, tensor out, tensor self, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::cudnn_convolution_relu_out(*out, *self, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::cudnn_convolution_relu_out(*out, *self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -6413,14 +6726,14 @@ void atg_diagonal_scatter_out(tensor *out__, tensor out, tensor self, tensor src
 
 void atg_diff(tensor *out__, tensor self, int64_t n, int64_t dim, tensor prepend, tensor append) {
   PROTECT(
-    auto outputs__ = torch::diff(*self, n, dim, (prepend ? *prepend : torch::Tensor()), (append ? *append : torch::Tensor()));
+    auto outputs__ = torch::diff(*self, n, dim, (prepend ? ::std::optional<at::Tensor>(*prepend) : ::std::nullopt), (append ? ::std::optional<at::Tensor>(*append) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_diff_out(tensor *out__, tensor out, tensor self, int64_t n, int64_t dim, tensor prepend, tensor append) {
   PROTECT(
-    auto outputs__ = torch::diff_out(*out, *self, n, dim, (prepend ? *prepend : torch::Tensor()), (append ? *append : torch::Tensor()));
+    auto outputs__ = torch::diff_out(*out, *self, n, dim, (prepend ? ::std::optional<at::Tensor>(*prepend) : ::std::nullopt), (append ? ::std::optional<at::Tensor>(*append) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -6740,7 +7053,7 @@ void atg_embedding_backward(tensor *out__, tensor grad, tensor indices, int64_t 
 
 void atg_embedding_bag(tensor *out__, tensor weight, tensor indices, tensor offsets, int scale_grad_by_freq, int64_t mode, int sparse, tensor per_sample_weights, int include_last_offset) {
   PROTECT(
-    auto outputs__ = torch::embedding_bag(*weight, *indices, *offsets, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? *per_sample_weights : torch::Tensor()), (bool)include_last_offset);
+    auto outputs__ = torch::embedding_bag(*weight, *indices, *offsets, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? ::std::optional<at::Tensor>(*per_sample_weights) : ::std::nullopt), (bool)include_last_offset);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -6750,7 +7063,7 @@ void atg_embedding_bag(tensor *out__, tensor weight, tensor indices, tensor offs
 
 void atg_embedding_bag_padding_idx(tensor *out__, tensor weight, tensor indices, tensor offsets, int scale_grad_by_freq, int64_t mode, int sparse, tensor per_sample_weights, int include_last_offset, int64_t padding_idx_v, uint8_t padding_idx_null) {
   PROTECT(
-    auto outputs__ = torch::embedding_bag(*weight, *indices, *offsets, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? *per_sample_weights : torch::Tensor()), (bool)include_last_offset, padding_idx_null ? c10::nullopt : c10::optional<int64_t>(padding_idx_v));
+    auto outputs__ = torch::embedding_bag(*weight, *indices, *offsets, (bool)scale_grad_by_freq, mode, (bool)sparse, (per_sample_weights ? ::std::optional<at::Tensor>(*per_sample_weights) : ::std::nullopt), (bool)include_last_offset, padding_idx_null ? c10::nullopt : c10::optional<int64_t>(padding_idx_v));
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -7784,6 +8097,13 @@ void atg_floor_divide_scalar_(tensor *out__, tensor self, scalar other) {
   )
 }
 
+void atg_floor_divide_scalar_out(tensor *out__, tensor out, tensor self, scalar other) {
+  PROTECT(
+    auto outputs__ = torch::floor_divide_out(*out, *self, *other);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
 void atg_floor_out(tensor *out__, tensor out, tensor self) {
   PROTECT(
     auto outputs__ = torch::floor_out(*out, *self);
@@ -8375,7 +8695,7 @@ void atg_grid_sampler_3d_out(tensor *out__, tensor out, tensor input, tensor gri
 
 void atg_group_norm(tensor *out__, tensor input, int64_t num_groups, tensor weight, tensor bias, double eps, int cudnn_enabled) {
   PROTECT(
-    auto outputs__ = torch::group_norm(*input, num_groups, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), eps, (bool)cudnn_enabled);
+    auto outputs__ = torch::group_norm(*input, num_groups, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), eps, (bool)cudnn_enabled);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -8390,7 +8710,7 @@ void atg_gru(tensor *out__, tensor input, tensor hx, tensor *params_data, int pa
 
 void atg_gru_cell(tensor *out__, tensor input, tensor hx, tensor w_ih, tensor w_hh, tensor b_ih, tensor b_hh) {
   PROTECT(
-    auto outputs__ = torch::gru_cell(*input, *hx, *w_ih, *w_hh, (b_ih ? *b_ih : torch::Tensor()), (b_hh ? *b_hh : torch::Tensor()));
+    auto outputs__ = torch::gru_cell(*input, *hx, *w_ih, *w_hh, (b_ih ? ::std::optional<at::Tensor>(*b_ih) : ::std::nullopt), (b_hh ? ::std::optional<at::Tensor>(*b_hh) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -8706,7 +9026,7 @@ void atg_histc_out(tensor *out__, tensor out, tensor self, int64_t bins) {
 
 void atg_histogram(tensor *out__, tensor self, tensor bins, tensor weight, int density) {
   PROTECT(
-    auto outputs__ = torch::histogram(*self, *bins, (weight ? *weight : torch::Tensor()), (bool)density);
+    auto outputs__ = torch::histogram(*self, *bins, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bool)density);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -8714,7 +9034,7 @@ void atg_histogram(tensor *out__, tensor self, tensor bins, tensor weight, int d
 
 void atg_histogram_bin_ct(tensor *out__, tensor self, int64_t bins, double *range_data, int range_len, tensor weight, int density) {
   PROTECT(
-    auto outputs__ = torch::histogram(*self, bins, at::ArrayRef<double>(range_data, range_len), (weight ? *weight : torch::Tensor()), (bool)density);
+    auto outputs__ = torch::histogram(*self, bins, at::ArrayRef<double>(range_data, range_len), (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bool)density);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -8722,7 +9042,7 @@ void atg_histogram_bin_ct(tensor *out__, tensor self, int64_t bins, double *rang
 
 void atg_histogram_bin_ct_out(tensor *out__, tensor hist, tensor bin_edges, tensor self, int64_t bins, double *range_data, int range_len, tensor weight, int density) {
   PROTECT(
-    auto outputs__ = torch::histogram_out(*hist, *bin_edges, *self, bins, at::ArrayRef<double>(range_data, range_len), (weight ? *weight : torch::Tensor()), (bool)density);
+    auto outputs__ = torch::histogram_out(*hist, *bin_edges, *self, bins, at::ArrayRef<double>(range_data, range_len), (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bool)density);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -8730,7 +9050,7 @@ void atg_histogram_bin_ct_out(tensor *out__, tensor hist, tensor bin_edges, tens
 
 void atg_histogram_bins_tensor_out(tensor *out__, tensor hist, tensor bin_edges, tensor self, tensor bins, tensor weight, int density) {
   PROTECT(
-    auto outputs__ = torch::histogram_out(*hist, *bin_edges, *self, *bins, (weight ? *weight : torch::Tensor()), (bool)density);
+    auto outputs__ = torch::histogram_out(*hist, *bin_edges, *self, *bins, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bool)density);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -9128,7 +9448,7 @@ void atg_inner_out(tensor *out__, tensor out, tensor self, tensor other) {
 
 void atg_instance_norm(tensor *out__, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, int use_input_stats, double momentum, double eps, int cudnn_enabled) {
   PROTECT(
-    auto outputs__ = torch::instance_norm(*input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), (bool)use_input_stats, momentum, eps, (bool)cudnn_enabled);
+    auto outputs__ = torch::instance_norm(*input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), (bool)use_input_stats, momentum, eps, (bool)cudnn_enabled);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -9380,7 +9700,7 @@ void atg_isreal(tensor *out__, tensor self) {
 
 void atg_istft(tensor *out__, tensor self, int64_t n_fft, int64_t hop_length_v, uint8_t hop_length_null, int64_t win_length_v, uint8_t win_length_null, tensor window, int center, int normalized, int onesided, int64_t length_v, uint8_t length_null, int return_complex) {
   PROTECT(
-    auto outputs__ = torch::istft(*self, n_fft, hop_length_null ? c10::nullopt : c10::optional<int64_t>(hop_length_v), win_length_null ? c10::nullopt : c10::optional<int64_t>(win_length_v), (window ? *window : torch::Tensor()), (bool)center, (bool)normalized, (bool)onesided, length_null ? c10::nullopt : c10::optional<int64_t>(length_v), (bool)return_complex);
+    auto outputs__ = torch::istft(*self, n_fft, hop_length_null ? c10::nullopt : c10::optional<int64_t>(hop_length_v), win_length_null ? c10::nullopt : c10::optional<int64_t>(win_length_v), (window ? ::std::optional<at::Tensor>(*window) : ::std::nullopt), (bool)center, (bool)normalized, (bool)onesided, length_null ? c10::nullopt : c10::optional<int64_t>(length_v), (bool)return_complex);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -9473,7 +9793,7 @@ void atg_l1_loss(tensor *out__, tensor self, tensor target, int64_t reduction) {
 
 void atg_layer_norm(tensor *out__, tensor input, int64_t *normalized_shape_data, int normalized_shape_len, tensor weight, tensor bias, double eps, int cudnn_enable) {
   PROTECT(
-    auto outputs__ = torch::layer_norm(*input, torch::IntArrayRef(normalized_shape_data, normalized_shape_len), (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), eps, (bool)cudnn_enable);
+    auto outputs__ = torch::layer_norm(*input, torch::IntArrayRef(normalized_shape_data, normalized_shape_len), (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), eps, (bool)cudnn_enable);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -10175,14 +10495,14 @@ void atg_linalg_matrix_rank_atol_rtol_float_out(tensor *out__, tensor out, tenso
 
 void atg_linalg_matrix_rank_atol_rtol_tensor(tensor *out__, tensor input, tensor atol, tensor rtol, int hermitian) {
   PROTECT(
-    auto outputs__ = torch::linalg_matrix_rank(*input, (atol ? *atol : torch::Tensor()), (rtol ? *rtol : torch::Tensor()), (bool)hermitian);
+    auto outputs__ = torch::linalg_matrix_rank(*input, (atol ? ::std::optional<at::Tensor>(*atol) : ::std::nullopt), (rtol ? ::std::optional<at::Tensor>(*rtol) : ::std::nullopt), (bool)hermitian);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_linalg_matrix_rank_atol_rtol_tensor_out(tensor *out__, tensor out, tensor input, tensor atol, tensor rtol, int hermitian) {
   PROTECT(
-    auto outputs__ = torch::linalg_matrix_rank_out(*out, *input, (atol ? *atol : torch::Tensor()), (rtol ? *rtol : torch::Tensor()), (bool)hermitian);
+    auto outputs__ = torch::linalg_matrix_rank_out(*out, *input, (atol ? ::std::optional<at::Tensor>(*atol) : ::std::nullopt), (rtol ? ::std::optional<at::Tensor>(*rtol) : ::std::nullopt), (bool)hermitian);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -10273,14 +10593,14 @@ void atg_linalg_pinv_atol_rtol_float_out(tensor *out__, tensor out, tensor self,
 
 void atg_linalg_pinv_atol_rtol_tensor(tensor *out__, tensor self, tensor atol, tensor rtol, int hermitian) {
   PROTECT(
-    auto outputs__ = torch::linalg_pinv(*self, (atol ? *atol : torch::Tensor()), (rtol ? *rtol : torch::Tensor()), (bool)hermitian);
+    auto outputs__ = torch::linalg_pinv(*self, (atol ? ::std::optional<at::Tensor>(*atol) : ::std::nullopt), (rtol ? ::std::optional<at::Tensor>(*rtol) : ::std::nullopt), (bool)hermitian);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_linalg_pinv_atol_rtol_tensor_out(tensor *out__, tensor out, tensor self, tensor atol, tensor rtol, int hermitian) {
   PROTECT(
-    auto outputs__ = torch::linalg_pinv_out(*out, *self, (atol ? *atol : torch::Tensor()), (rtol ? *rtol : torch::Tensor()), (bool)hermitian);
+    auto outputs__ = torch::linalg_pinv_out(*out, *self, (atol ? ::std::optional<at::Tensor>(*atol) : ::std::nullopt), (rtol ? ::std::optional<at::Tensor>(*rtol) : ::std::nullopt), (bool)hermitian);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -10465,14 +10785,14 @@ void atg_linalg_vecdot_out(tensor *out__, tensor out, tensor x, tensor y, int64_
 
 void atg_linear(tensor *out__, tensor input, tensor weight, tensor bias) {
   PROTECT(
-    auto outputs__ = torch::linear(*input, *weight, (bias ? *bias : torch::Tensor()));
+    auto outputs__ = torch::linear(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_linear_out(tensor *out__, tensor out, tensor input, tensor weight, tensor bias) {
   PROTECT(
-    auto outputs__ = torch::linear_out(*out, *input, *weight, (bias ? *bias : torch::Tensor()));
+    auto outputs__ = torch::linear_out(*out, *input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -10485,6 +10805,48 @@ void atg_linspace(tensor *out__, scalar start, scalar end, int64_t steps, int op
 }
 
 void atg_linspace_out(tensor *out__, tensor out, scalar start, scalar end, int64_t steps) {
+  PROTECT(
+    auto outputs__ = torch::linspace_out(*out, *start, *end, steps);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_linspace_scalar_tensor(tensor *out__, scalar start, tensor end, int64_t steps, int options_kind, int options_device) {
+  PROTECT(
+    auto outputs__ = torch::linspace(*start, *end, steps, at::device(device_of_int(options_device)).dtype(at::ScalarType(options_kind)));
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_linspace_scalar_tensor_out(tensor *out__, tensor out, scalar start, tensor end, int64_t steps) {
+  PROTECT(
+    auto outputs__ = torch::linspace_out(*out, *start, *end, steps);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_linspace_tensor_scalar(tensor *out__, tensor start, scalar end, int64_t steps, int options_kind, int options_device) {
+  PROTECT(
+    auto outputs__ = torch::linspace(*start, *end, steps, at::device(device_of_int(options_device)).dtype(at::ScalarType(options_kind)));
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_linspace_tensor_scalar_out(tensor *out__, tensor out, tensor start, scalar end, int64_t steps) {
+  PROTECT(
+    auto outputs__ = torch::linspace_out(*out, *start, *end, steps);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_linspace_tensor_tensor(tensor *out__, tensor start, tensor end, int64_t steps, int options_kind, int options_device) {
+  PROTECT(
+    auto outputs__ = torch::linspace(*start, *end, steps, at::device(device_of_int(options_device)).dtype(at::ScalarType(options_kind)));
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_linspace_tensor_tensor_out(tensor *out__, tensor out, tensor start, tensor end, int64_t steps) {
   PROTECT(
     auto outputs__ = torch::linspace_out(*out, *start, *end, steps);
     out__[0] = new torch::Tensor(outputs__);
@@ -10820,6 +11182,48 @@ void atg_logspace_out(tensor *out__, tensor out, scalar start, scalar end, int64
   )
 }
 
+void atg_logspace_scalar_tensor(tensor *out__, scalar start, tensor end, int64_t steps, double base, int options_kind, int options_device) {
+  PROTECT(
+    auto outputs__ = torch::logspace(*start, *end, steps, base, at::device(device_of_int(options_device)).dtype(at::ScalarType(options_kind)));
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_logspace_scalar_tensor_out(tensor *out__, tensor out, scalar start, tensor end, int64_t steps, double base) {
+  PROTECT(
+    auto outputs__ = torch::logspace_out(*out, *start, *end, steps, base);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_logspace_tensor_scalar(tensor *out__, tensor start, scalar end, int64_t steps, double base, int options_kind, int options_device) {
+  PROTECT(
+    auto outputs__ = torch::logspace(*start, *end, steps, base, at::device(device_of_int(options_device)).dtype(at::ScalarType(options_kind)));
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_logspace_tensor_scalar_out(tensor *out__, tensor out, tensor start, scalar end, int64_t steps, double base) {
+  PROTECT(
+    auto outputs__ = torch::logspace_out(*out, *start, *end, steps, base);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_logspace_tensor_tensor(tensor *out__, tensor start, tensor end, int64_t steps, double base, int options_kind, int options_device) {
+  PROTECT(
+    auto outputs__ = torch::logspace(*start, *end, steps, base, at::device(device_of_int(options_device)).dtype(at::ScalarType(options_kind)));
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_logspace_tensor_tensor_out(tensor *out__, tensor out, tensor start, tensor end, int64_t steps, double base) {
+  PROTECT(
+    auto outputs__ = torch::logspace_out(*out, *start, *end, steps, base);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
 void atg_logsumexp(tensor *out__, tensor self, int64_t *dim_data, int dim_len, int keepdim) {
   PROTECT(
     auto outputs__ = torch::logsumexp(*self, torch::IntArrayRef(dim_data, dim_len), (bool)keepdim);
@@ -10845,7 +11249,7 @@ void atg_lstm(tensor *out__, tensor input, tensor *hx_data, int hx_len, tensor *
 
 void atg_lstm_cell(tensor *out__, tensor input, tensor *hx_data, int hx_len, tensor w_ih, tensor w_hh, tensor b_ih, tensor b_hh) {
   PROTECT(
-    auto outputs__ = torch::lstm_cell(*input, of_carray_tensor(hx_data, hx_len), *w_ih, *w_hh, (b_ih ? *b_ih : torch::Tensor()), (b_hh ? *b_hh : torch::Tensor()));
+    auto outputs__ = torch::lstm_cell(*input, of_carray_tensor(hx_data, hx_len), *w_ih, *w_hh, (b_ih ? ::std::optional<at::Tensor>(*b_ih) : ::std::nullopt), (b_hh ? ::std::optional<at::Tensor>(*b_hh) : ::std::nullopt));
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
@@ -10862,7 +11266,7 @@ void atg_lstm_data(tensor *out__, tensor data, tensor batch_sizes, tensor *hx_da
 
 void atg_lstm_mps_backward(tensor out0, tensor *out1_data, int out1_len, tensor *out2_data, int out2_len, tensor grad_y, tensor grad_hy, tensor grad_cy, tensor z_state, tensor cell_state_fwd, tensor input, tensor layersOutputs, tensor *hx_data, int hx_len, tensor *params_data, int params_len, int has_biases, int64_t num_layers, double dropout, int train, int bidirectional, int batch_first) {
   PROTECT(
-    torch::lstm_mps_backward_out(*out0, of_carray_tensor(out1_data, out1_len), of_carray_tensor(out2_data, out2_len), (grad_y ? *grad_y : torch::Tensor()), (grad_hy ? *grad_hy : torch::Tensor()), (grad_cy ? *grad_cy : torch::Tensor()), *z_state, *cell_state_fwd, *input, *layersOutputs, of_carray_tensor(hx_data, hx_len), of_carray_tensor(params_data, params_len), (bool)has_biases, num_layers, dropout, (bool)train, (bool)bidirectional, (bool)batch_first);
+    torch::lstm_mps_backward_out(*out0, of_carray_tensor(out1_data, out1_len), of_carray_tensor(out2_data, out2_len), (grad_y ? ::std::optional<at::Tensor>(*grad_y) : ::std::nullopt), (grad_hy ? ::std::optional<at::Tensor>(*grad_hy) : ::std::nullopt), (grad_cy ? ::std::optional<at::Tensor>(*grad_cy) : ::std::nullopt), *z_state, *cell_state_fwd, *input, *layersOutputs, of_carray_tensor(hx_data, hx_len), of_carray_tensor(params_data, params_len), (bool)has_biases, num_layers, dropout, (bool)train, (bool)bidirectional, (bool)batch_first);
   )
 }
 
@@ -10999,6 +11403,13 @@ void atg_masked_scatter(tensor *out__, tensor self, tensor mask, tensor source) 
 void atg_masked_scatter_(tensor *out__, tensor self, tensor mask, tensor source) {
   PROTECT(
     auto outputs__ = self->masked_scatter_(*mask, *source);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_masked_scatter_backward(tensor *out__, tensor grad_output, tensor mask, int64_t *sizes_data, int sizes_len) {
+  PROTECT(
+    auto outputs__ = torch::masked_scatter_backward(*grad_output, *mask, torch::IntArrayRef(sizes_data, sizes_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -11413,7 +11824,7 @@ void atg_minimum_out(tensor *out__, tensor out, tensor self, tensor other) {
 
 void atg_miopen_batch_norm(tensor *out__, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, int training, double exponential_average_factor, double epsilon) {
   PROTECT(
-    auto outputs__ = torch::miopen_batch_norm(*input, *weight, (bias ? *bias : torch::Tensor()), (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), (bool)training, exponential_average_factor, epsilon);
+    auto outputs__ = torch::miopen_batch_norm(*input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), (bool)training, exponential_average_factor, epsilon);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -11422,7 +11833,7 @@ void atg_miopen_batch_norm(tensor *out__, tensor input, tensor weight, tensor bi
 
 void atg_miopen_batch_norm_backward(tensor *out__, tensor input, tensor grad_output, tensor weight, tensor running_mean, tensor running_var, tensor save_mean, tensor save_var, double epsilon) {
   PROTECT(
-    auto outputs__ = torch::miopen_batch_norm_backward(*input, *grad_output, *weight, (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), (save_mean ? *save_mean : torch::Tensor()), (save_var ? *save_var : torch::Tensor()), epsilon);
+    auto outputs__ = torch::miopen_batch_norm_backward(*input, *grad_output, *weight, (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), (save_mean ? ::std::optional<at::Tensor>(*save_mean) : ::std::nullopt), (save_var ? ::std::optional<at::Tensor>(*save_var) : ::std::nullopt), epsilon);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -11431,7 +11842,7 @@ void atg_miopen_batch_norm_backward(tensor *out__, tensor input, tensor grad_out
 
 void atg_miopen_batch_norm_backward_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor input, tensor grad_output, tensor weight, tensor running_mean, tensor running_var, tensor save_mean, tensor save_var, double epsilon) {
   PROTECT(
-    auto outputs__ = torch::miopen_batch_norm_backward_out(*out0, *out1, *out2, *input, *grad_output, *weight, (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), (save_mean ? *save_mean : torch::Tensor()), (save_var ? *save_var : torch::Tensor()), epsilon);
+    auto outputs__ = torch::miopen_batch_norm_backward_out(*out0, *out1, *out2, *input, *grad_output, *weight, (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), (save_mean ? ::std::optional<at::Tensor>(*save_mean) : ::std::nullopt), (save_var ? ::std::optional<at::Tensor>(*save_var) : ::std::nullopt), epsilon);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -11440,7 +11851,7 @@ void atg_miopen_batch_norm_backward_out(tensor *out__, tensor out0, tensor out1,
 
 void atg_miopen_batch_norm_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, int training, double exponential_average_factor, double epsilon) {
   PROTECT(
-    auto outputs__ = torch::miopen_batch_norm_out(*out0, *out1, *out2, *input, *weight, (bias ? *bias : torch::Tensor()), (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), (bool)training, exponential_average_factor, epsilon);
+    auto outputs__ = torch::miopen_batch_norm_out(*out0, *out1, *out2, *input, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), (bool)training, exponential_average_factor, epsilon);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -11449,63 +11860,63 @@ void atg_miopen_batch_norm_out(tensor *out__, tensor out0, tensor out1, tensor o
 
 void atg_miopen_convolution(tensor *out__, tensor self, tensor weight, tensor bias, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
   PROTECT(
-    auto outputs__ = torch::miopen_convolution(*self, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic);
+    auto outputs__ = torch::miopen_convolution(*self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_miopen_convolution_add_relu(tensor *out__, tensor self, tensor weight, tensor z, scalar alpha, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::miopen_convolution_add_relu(*self, *weight, *z, *alpha, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::miopen_convolution_add_relu(*self, *weight, *z, *alpha, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_miopen_convolution_out(tensor *out__, tensor out, tensor self, tensor weight, tensor bias, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
   PROTECT(
-    auto outputs__ = torch::miopen_convolution_out(*out, *self, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic);
+    auto outputs__ = torch::miopen_convolution_out(*out, *self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_miopen_convolution_relu(tensor *out__, tensor self, tensor weight, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::miopen_convolution_relu(*self, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::miopen_convolution_relu(*self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_miopen_convolution_transpose(tensor *out__, tensor self, tensor weight, tensor bias, int64_t *padding_data, int padding_len, int64_t *output_padding_data, int output_padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
   PROTECT(
-    auto outputs__ = torch::miopen_convolution_transpose(*self, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic);
+    auto outputs__ = torch::miopen_convolution_transpose(*self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_miopen_convolution_transpose_out(tensor *out__, tensor out, tensor self, tensor weight, tensor bias, int64_t *padding_data, int padding_len, int64_t *output_padding_data, int output_padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
   PROTECT(
-    auto outputs__ = torch::miopen_convolution_transpose_out(*out, *self, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic);
+    auto outputs__ = torch::miopen_convolution_transpose_out(*out, *self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_miopen_depthwise_convolution(tensor *out__, tensor self, tensor weight, tensor bias, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
   PROTECT(
-    auto outputs__ = torch::miopen_depthwise_convolution(*self, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic);
+    auto outputs__ = torch::miopen_depthwise_convolution(*self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_miopen_depthwise_convolution_out(tensor *out__, tensor out, tensor self, tensor weight, tensor bias, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
   PROTECT(
-    auto outputs__ = torch::miopen_depthwise_convolution_out(*out, *self, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic);
+    auto outputs__ = torch::miopen_depthwise_convolution_out(*out, *self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_miopen_rnn(tensor *out__, tensor input, tensor *weight_data, int weight_len, int64_t weight_stride0, tensor hx, tensor cx, int64_t mode, int64_t hidden_size, int64_t num_layers, int batch_first, double dropout, int train, int bidirectional, int64_t *batch_sizes_data, int batch_sizes_len, tensor dropout_state) {
   PROTECT(
-    auto outputs__ = torch::miopen_rnn(*input, of_carray_tensor(weight_data, weight_len), weight_stride0, *hx, (cx ? *cx : torch::Tensor()), mode, hidden_size, num_layers, (bool)batch_first, dropout, (bool)train, (bool)bidirectional, torch::IntArrayRef(batch_sizes_data, batch_sizes_len), (dropout_state ? *dropout_state : torch::Tensor()));
+    auto outputs__ = torch::miopen_rnn(*input, of_carray_tensor(weight_data, weight_len), weight_stride0, *hx, (cx ? ::std::optional<at::Tensor>(*cx) : ::std::nullopt), mode, hidden_size, num_layers, (bool)batch_first, dropout, (bool)train, (bool)bidirectional, torch::IntArrayRef(batch_sizes_data, batch_sizes_len), (dropout_state ? ::std::optional<at::Tensor>(*dropout_state) : ::std::nullopt));
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -11516,7 +11927,7 @@ void atg_miopen_rnn(tensor *out__, tensor input, tensor *weight_data, int weight
 
 void atg_miopen_rnn_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor out3, tensor out4, tensor input, tensor *weight_data, int weight_len, int64_t weight_stride0, tensor hx, tensor cx, int64_t mode, int64_t hidden_size, int64_t num_layers, int batch_first, double dropout, int train, int bidirectional, int64_t *batch_sizes_data, int batch_sizes_len, tensor dropout_state) {
   PROTECT(
-    auto outputs__ = torch::miopen_rnn_out(*out0, *out1, *out2, *out3, *out4, *input, of_carray_tensor(weight_data, weight_len), weight_stride0, *hx, (cx ? *cx : torch::Tensor()), mode, hidden_size, num_layers, (bool)batch_first, dropout, (bool)train, (bool)bidirectional, torch::IntArrayRef(batch_sizes_data, batch_sizes_len), (dropout_state ? *dropout_state : torch::Tensor()));
+    auto outputs__ = torch::miopen_rnn_out(*out0, *out1, *out2, *out3, *out4, *input, of_carray_tensor(weight_data, weight_len), weight_stride0, *hx, (cx ? ::std::optional<at::Tensor>(*cx) : ::std::nullopt), mode, hidden_size, num_layers, (bool)batch_first, dropout, (bool)train, (bool)bidirectional, torch::IntArrayRef(batch_sizes_data, batch_sizes_len), (dropout_state ? ::std::optional<at::Tensor>(*dropout_state) : ::std::nullopt));
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -11583,21 +11994,21 @@ void atg_mkldnn_adaptive_avg_pool2d_out(tensor *out__, tensor out, tensor self, 
 
 void atg_mkldnn_convolution(tensor *out__, tensor self, tensor weight, tensor bias, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::mkldnn_convolution(*self, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::mkldnn_convolution(*self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_mkldnn_convolution_out(tensor *out__, tensor out, tensor self, tensor weight, tensor bias, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    auto outputs__ = torch::mkldnn_convolution_out(*out, *self, *weight, (bias ? *bias : torch::Tensor()), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::mkldnn_convolution_out(*out, *self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_mkldnn_linear(tensor *out__, tensor self, tensor weight, tensor bias) {
   PROTECT(
-    auto outputs__ = torch::mkldnn_linear(*self, *weight, (bias ? *bias : torch::Tensor()));
+    auto outputs__ = torch::mkldnn_linear(*self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -11634,7 +12045,7 @@ void atg_mkldnn_linear_backward_weights_out(tensor *out__, tensor out0, tensor o
 
 void atg_mkldnn_linear_out(tensor *out__, tensor out, tensor self, tensor weight, tensor bias) {
   PROTECT(
-    auto outputs__ = torch::mkldnn_linear_out(*out, *self, *weight, (bias ? *bias : torch::Tensor()));
+    auto outputs__ = torch::mkldnn_linear_out(*out, *self, *weight, (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -11709,16 +12120,16 @@ void atg_mkldnn_reorder_conv2d_weight_out(tensor *out__, tensor out, tensor self
   )
 }
 
-void atg_mkldnn_reorder_conv3d_weight(tensor *out__, tensor self, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
+void atg_mkldnn_reorder_conv3d_weight(tensor *out__, tensor self, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups, int64_t *input_size_data, int input_size_len) {
   PROTECT(
-    auto outputs__ = torch::mkldnn_reorder_conv3d_weight(*self, torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::mkldnn_reorder_conv3d_weight(*self, torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, input_size_data == nullptr ? c10::nullopt : c10::optional<torch::IntArrayRef>(torch::IntArrayRef(input_size_data, input_size_len)));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
-void atg_mkldnn_reorder_conv3d_weight_out(tensor *out__, tensor out, tensor self, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups) {
+void atg_mkldnn_reorder_conv3d_weight_out(tensor *out__, tensor out, tensor self, int64_t *padding_data, int padding_len, int64_t *stride_data, int stride_len, int64_t *dilation_data, int dilation_len, int64_t groups, int64_t *input_size_data, int input_size_len) {
   PROTECT(
-    auto outputs__ = torch::mkldnn_reorder_conv3d_weight_out(*out, *self, torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups);
+    auto outputs__ = torch::mkldnn_reorder_conv3d_weight_out(*out, *self, torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(dilation_data, dilation_len), groups, input_size_data == nullptr ? c10::nullopt : c10::optional<torch::IntArrayRef>(torch::IntArrayRef(input_size_data, input_size_len)));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -11735,7 +12146,7 @@ void atg_mkldnn_rnn_layer(tensor *out__, tensor input, tensor weight0, tensor we
 
 void atg_mkldnn_rnn_layer_backward(tensor *out__, tensor input, tensor weight1, tensor weight2, tensor weight3, tensor weight4, tensor hx_, tensor cx_tmp, tensor output, tensor hy_, tensor cy_, tensor grad_output, tensor grad_hy, tensor grad_cy, int reverse, int64_t mode, int64_t hidden_size, int64_t num_layers, int has_biases, int train, int bidirectional, int64_t *batch_sizes_data, int batch_sizes_len, int batch_first, tensor workspace) {
   PROTECT(
-    auto outputs__ = torch::mkldnn_rnn_layer_backward(*input, *weight1, *weight2, *weight3, *weight4, *hx_, *cx_tmp, *output, *hy_, *cy_, (grad_output ? *grad_output : torch::Tensor()), (grad_hy ? *grad_hy : torch::Tensor()), (grad_cy ? *grad_cy : torch::Tensor()), (bool)reverse, mode, hidden_size, num_layers, (bool)has_biases, (bool)train, (bool)bidirectional, torch::IntArrayRef(batch_sizes_data, batch_sizes_len), (bool)batch_first, *workspace);
+    auto outputs__ = torch::mkldnn_rnn_layer_backward(*input, *weight1, *weight2, *weight3, *weight4, *hx_, *cx_tmp, *output, *hy_, *cy_, (grad_output ? ::std::optional<at::Tensor>(*grad_output) : ::std::nullopt), (grad_hy ? ::std::optional<at::Tensor>(*grad_hy) : ::std::nullopt), (grad_cy ? ::std::optional<at::Tensor>(*grad_cy) : ::std::nullopt), (bool)reverse, mode, hidden_size, num_layers, (bool)has_biases, (bool)train, (bool)bidirectional, torch::IntArrayRef(batch_sizes_data, batch_sizes_len), (bool)batch_first, *workspace);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -11748,7 +12159,7 @@ void atg_mkldnn_rnn_layer_backward(tensor *out__, tensor input, tensor weight1, 
 
 void atg_mkldnn_rnn_layer_backward_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor out3, tensor out4, tensor out5, tensor out6, tensor input, tensor weight1, tensor weight2, tensor weight3, tensor weight4, tensor hx_, tensor cx_tmp, tensor output, tensor hy_, tensor cy_, tensor grad_output, tensor grad_hy, tensor grad_cy, int reverse, int64_t mode, int64_t hidden_size, int64_t num_layers, int has_biases, int train, int bidirectional, int64_t *batch_sizes_data, int batch_sizes_len, int batch_first, tensor workspace) {
   PROTECT(
-    auto outputs__ = torch::mkldnn_rnn_layer_backward_out(*out0, *out1, *out2, *out3, *out4, *out5, *out6, *input, *weight1, *weight2, *weight3, *weight4, *hx_, *cx_tmp, *output, *hy_, *cy_, (grad_output ? *grad_output : torch::Tensor()), (grad_hy ? *grad_hy : torch::Tensor()), (grad_cy ? *grad_cy : torch::Tensor()), (bool)reverse, mode, hidden_size, num_layers, (bool)has_biases, (bool)train, (bool)bidirectional, torch::IntArrayRef(batch_sizes_data, batch_sizes_len), (bool)batch_first, *workspace);
+    auto outputs__ = torch::mkldnn_rnn_layer_backward_out(*out0, *out1, *out2, *out3, *out4, *out5, *out6, *input, *weight1, *weight2, *weight3, *weight4, *hx_, *cx_tmp, *output, *hy_, *cy_, (grad_output ? ::std::optional<at::Tensor>(*grad_output) : ::std::nullopt), (grad_hy ? ::std::optional<at::Tensor>(*grad_hy) : ::std::nullopt), (grad_cy ? ::std::optional<at::Tensor>(*grad_cy) : ::std::nullopt), (bool)reverse, mode, hidden_size, num_layers, (bool)has_biases, (bool)train, (bool)bidirectional, torch::IntArrayRef(batch_sizes_data, batch_sizes_len), (bool)batch_first, *workspace);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -11920,14 +12331,14 @@ void atg_mul_scalar_out(tensor *out__, tensor out, tensor self, scalar other) {
 
 void atg_multi_margin_loss_backward(tensor *out__, tensor grad_output, tensor self, tensor target, scalar p, scalar margin, tensor weight, int64_t reduction) {
   PROTECT(
-    auto outputs__ = torch::multi_margin_loss_backward(*grad_output, *self, *target, *p, *margin, (weight ? *weight : torch::Tensor()), reduction);
+    auto outputs__ = torch::multi_margin_loss_backward(*grad_output, *self, *target, *p, *margin, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_multi_margin_loss_backward_grad_input(tensor *out__, tensor grad_input, tensor grad_output, tensor self, tensor target, scalar p, scalar margin, tensor weight, int64_t reduction) {
   PROTECT(
-    auto outputs__ = torch::multi_margin_loss_backward_out(*grad_input, *grad_output, *self, *target, *p, *margin, (weight ? *weight : torch::Tensor()), reduction);
+    auto outputs__ = torch::multi_margin_loss_backward_out(*grad_input, *grad_output, *self, *target, *p, *margin, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -12181,7 +12592,7 @@ void atg_narrow_tensor(tensor *out__, tensor self, int64_t dim, tensor start, in
 
 void atg_native_batch_norm(tensor *out__, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, int training, double momentum, double eps) {
   PROTECT(
-    auto outputs__ = torch::native_batch_norm(*input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), (bool)training, momentum, eps);
+    auto outputs__ = torch::native_batch_norm(*input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), (bool)training, momentum, eps);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -12190,7 +12601,7 @@ void atg_native_batch_norm(tensor *out__, tensor input, tensor weight, tensor bi
 
 void atg_native_batch_norm_out(tensor *out__, tensor out, tensor save_mean, tensor save_invstd, tensor input, tensor weight, tensor bias, tensor running_mean, tensor running_var, int training, double momentum, double eps) {
   PROTECT(
-    auto outputs__ = torch::native_batch_norm_out(*out, *save_mean, *save_invstd, *input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), (running_mean ? *running_mean : torch::Tensor()), (running_var ? *running_var : torch::Tensor()), (bool)training, momentum, eps);
+    auto outputs__ = torch::native_batch_norm_out(*out, *save_mean, *save_invstd, *input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), (running_mean ? ::std::optional<at::Tensor>(*running_mean) : ::std::nullopt), (running_var ? ::std::optional<at::Tensor>(*running_var) : ::std::nullopt), (bool)training, momentum, eps);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -12236,7 +12647,7 @@ void atg_native_dropout_out(tensor *out__, tensor out0, tensor out1, tensor inpu
 
 void atg_native_group_norm(tensor *out__, tensor input, tensor weight, tensor bias, int64_t n, int64_t C, int64_t HxW, int64_t group, double eps) {
   PROTECT(
-    auto outputs__ = torch::native_group_norm(*input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), n, C, HxW, group, eps);
+    auto outputs__ = torch::native_group_norm(*input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), n, C, HxW, group, eps);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -12245,7 +12656,7 @@ void atg_native_group_norm(tensor *out__, tensor input, tensor weight, tensor bi
 
 void atg_native_group_norm_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor input, tensor weight, tensor bias, int64_t n, int64_t C, int64_t HxW, int64_t group, double eps) {
   PROTECT(
-    auto outputs__ = torch::native_group_norm_out(*out0, *out1, *out2, *input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), n, C, HxW, group, eps);
+    auto outputs__ = torch::native_group_norm_out(*out0, *out1, *out2, *input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), n, C, HxW, group, eps);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -12254,7 +12665,7 @@ void atg_native_group_norm_out(tensor *out__, tensor out0, tensor out1, tensor o
 
 void atg_native_layer_norm(tensor *out__, tensor input, int64_t *normalized_shape_data, int normalized_shape_len, tensor weight, tensor bias, double eps) {
   PROTECT(
-    auto outputs__ = torch::native_layer_norm(*input, torch::IntArrayRef(normalized_shape_data, normalized_shape_len), (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), eps);
+    auto outputs__ = torch::native_layer_norm(*input, torch::IntArrayRef(normalized_shape_data, normalized_shape_len), (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), eps);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -12263,7 +12674,7 @@ void atg_native_layer_norm(tensor *out__, tensor input, int64_t *normalized_shap
 
 void atg_native_layer_norm_out(tensor *out__, tensor out0, tensor out1, tensor out2, tensor input, int64_t *normalized_shape_data, int normalized_shape_len, tensor weight, tensor bias, double eps) {
   PROTECT(
-    auto outputs__ = torch::native_layer_norm_out(*out0, *out1, *out2, *input, torch::IntArrayRef(normalized_shape_data, normalized_shape_len), (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), eps);
+    auto outputs__ = torch::native_layer_norm_out(*out0, *out1, *out2, *input, torch::IntArrayRef(normalized_shape_data, normalized_shape_len), (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), eps);
     out__[0] = new torch::Tensor(std::get<0>(outputs__));
     out__[1] = new torch::Tensor(std::get<1>(outputs__));
     out__[2] = new torch::Tensor(std::get<2>(outputs__));
@@ -12482,63 +12893,63 @@ void atg_nextafter_out(tensor *out__, tensor out, tensor self, tensor other) {
 
 void atg_nll_loss(tensor *out__, tensor self, tensor target, tensor weight, int64_t reduction, int64_t ignore_index) {
   PROTECT(
-    auto outputs__ = torch::nll_loss(*self, *target, (weight ? *weight : torch::Tensor()), reduction, ignore_index);
+    auto outputs__ = torch::nll_loss(*self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction, ignore_index);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_nll_loss2d(tensor *out__, tensor self, tensor target, tensor weight, int64_t reduction, int64_t ignore_index) {
   PROTECT(
-    auto outputs__ = torch::nll_loss2d(*self, *target, (weight ? *weight : torch::Tensor()), reduction, ignore_index);
+    auto outputs__ = torch::nll_loss2d(*self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction, ignore_index);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_nll_loss2d_backward(tensor *out__, tensor grad_output, tensor self, tensor target, tensor weight, int64_t reduction, int64_t ignore_index, tensor total_weight) {
   PROTECT(
-    auto outputs__ = torch::nll_loss2d_backward(*grad_output, *self, *target, (weight ? *weight : torch::Tensor()), reduction, ignore_index, *total_weight);
+    auto outputs__ = torch::nll_loss2d_backward(*grad_output, *self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction, ignore_index, *total_weight);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_nll_loss2d_backward_grad_input(tensor *out__, tensor grad_input, tensor grad_output, tensor self, tensor target, tensor weight, int64_t reduction, int64_t ignore_index, tensor total_weight) {
   PROTECT(
-    auto outputs__ = torch::nll_loss2d_backward_out(*grad_input, *grad_output, *self, *target, (weight ? *weight : torch::Tensor()), reduction, ignore_index, *total_weight);
+    auto outputs__ = torch::nll_loss2d_backward_out(*grad_input, *grad_output, *self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction, ignore_index, *total_weight);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_nll_loss2d_out(tensor *out__, tensor out, tensor self, tensor target, tensor weight, int64_t reduction, int64_t ignore_index) {
   PROTECT(
-    auto outputs__ = torch::nll_loss2d_out(*out, *self, *target, (weight ? *weight : torch::Tensor()), reduction, ignore_index);
+    auto outputs__ = torch::nll_loss2d_out(*out, *self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction, ignore_index);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_nll_loss_backward(tensor *out__, tensor grad_output, tensor self, tensor target, tensor weight, int64_t reduction, int64_t ignore_index, tensor total_weight) {
   PROTECT(
-    auto outputs__ = torch::nll_loss_backward(*grad_output, *self, *target, (weight ? *weight : torch::Tensor()), reduction, ignore_index, *total_weight);
+    auto outputs__ = torch::nll_loss_backward(*grad_output, *self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction, ignore_index, *total_weight);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_nll_loss_backward_grad_input(tensor *out__, tensor grad_input, tensor grad_output, tensor self, tensor target, tensor weight, int64_t reduction, int64_t ignore_index, tensor total_weight) {
   PROTECT(
-    auto outputs__ = torch::nll_loss_backward_out(*grad_input, *grad_output, *self, *target, (weight ? *weight : torch::Tensor()), reduction, ignore_index, *total_weight);
+    auto outputs__ = torch::nll_loss_backward_out(*grad_input, *grad_output, *self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction, ignore_index, *total_weight);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_nll_loss_nd(tensor *out__, tensor self, tensor target, tensor weight, int64_t reduction, int64_t ignore_index) {
   PROTECT(
-    auto outputs__ = torch::nll_loss_nd(*self, *target, (weight ? *weight : torch::Tensor()), reduction, ignore_index);
+    auto outputs__ = torch::nll_loss_nd(*self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction, ignore_index);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_nll_loss_out(tensor *out__, tensor out, tensor self, tensor target, tensor weight, int64_t reduction, int64_t ignore_index) {
   PROTECT(
-    auto outputs__ = torch::nll_loss_out(*out, *self, *target, (weight ? *weight : torch::Tensor()), reduction, ignore_index);
+    auto outputs__ = torch::nll_loss_out(*out, *self, *target, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), reduction, ignore_index);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -13258,14 +13669,14 @@ void atg_quantize_per_tensor_tensors_out(tensor *out_data, int out_len, tensor *
 
 void atg_quantized_batch_norm(tensor *out__, tensor input, tensor weight, tensor bias, tensor mean, tensor var, double eps, double output_scale, int64_t output_zero_point) {
   PROTECT(
-    auto outputs__ = torch::quantized_batch_norm(*input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), *mean, *var, eps, output_scale, output_zero_point);
+    auto outputs__ = torch::quantized_batch_norm(*input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), *mean, *var, eps, output_scale, output_zero_point);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_quantized_batch_norm_out(tensor *out__, tensor out, tensor input, tensor weight, tensor bias, tensor mean, tensor var, double eps, double output_scale, int64_t output_zero_point) {
   PROTECT(
-    auto outputs__ = torch::quantized_batch_norm_out(*out, *input, (weight ? *weight : torch::Tensor()), (bias ? *bias : torch::Tensor()), *mean, *var, eps, output_scale, output_zero_point);
+    auto outputs__ = torch::quantized_batch_norm_out(*out, *input, (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), *mean, *var, eps, output_scale, output_zero_point);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -14041,6 +14452,13 @@ int atg_retains_grad(tensor self) {
   return 0;
 }
 
+void atg_rms_norm(tensor *out__, tensor input, int64_t *normalized_shape_data, int normalized_shape_len, tensor weight, double eps_v, uint8_t eps_null) {
+  PROTECT(
+    auto outputs__ = torch::rms_norm(*input, torch::IntArrayRef(normalized_shape_data, normalized_shape_len), (weight ? ::std::optional<at::Tensor>(*weight) : ::std::nullopt), eps_null ? c10::nullopt : c10::optional<double>(eps_v));
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
 void atg_rnn_relu(tensor *out__, tensor input, tensor hx, tensor *params_data, int params_len, int has_biases, int64_t num_layers, double dropout, int train, int bidirectional, int batch_first) {
   PROTECT(
     auto outputs__ = torch::rnn_relu(*input, *hx, of_carray_tensor(params_data, params_len), (bool)has_biases, num_layers, dropout, (bool)train, (bool)bidirectional, (bool)batch_first);
@@ -14051,7 +14469,7 @@ void atg_rnn_relu(tensor *out__, tensor input, tensor hx, tensor *params_data, i
 
 void atg_rnn_relu_cell(tensor *out__, tensor input, tensor hx, tensor w_ih, tensor w_hh, tensor b_ih, tensor b_hh) {
   PROTECT(
-    auto outputs__ = torch::rnn_relu_cell(*input, *hx, *w_ih, *w_hh, (b_ih ? *b_ih : torch::Tensor()), (b_hh ? *b_hh : torch::Tensor()));
+    auto outputs__ = torch::rnn_relu_cell(*input, *hx, *w_ih, *w_hh, (b_ih ? ::std::optional<at::Tensor>(*b_ih) : ::std::nullopt), (b_hh ? ::std::optional<at::Tensor>(*b_hh) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -14074,7 +14492,7 @@ void atg_rnn_tanh(tensor *out__, tensor input, tensor hx, tensor *params_data, i
 
 void atg_rnn_tanh_cell(tensor *out__, tensor input, tensor hx, tensor w_ih, tensor w_hh, tensor b_ih, tensor b_hh) {
   PROTECT(
-    auto outputs__ = torch::rnn_tanh_cell(*input, *hx, *w_ih, *w_hh, (b_ih ? *b_ih : torch::Tensor()), (b_hh ? *b_hh : torch::Tensor()));
+    auto outputs__ = torch::rnn_tanh_cell(*input, *hx, *w_ih, *w_hh, (b_ih ? ::std::optional<at::Tensor>(*b_ih) : ::std::nullopt), (b_hh ? ::std::optional<at::Tensor>(*b_hh) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -14306,7 +14724,7 @@ void atg_scalar_tensor_out(tensor *out__, tensor out, scalar s) {
 
 void atg_scaled_dot_product_attention(tensor *out__, tensor query, tensor key, tensor value, tensor attn_mask, double dropout_p, int is_causal, double scale_v, uint8_t scale_null) {
   PROTECT(
-    auto outputs__ = torch::scaled_dot_product_attention(*query, *key, *value, (attn_mask ? *attn_mask : torch::Tensor()), dropout_p, (bool)is_causal, scale_null ? c10::nullopt : c10::optional<double>(scale_v));
+    auto outputs__ = torch::scaled_dot_product_attention(*query, *key, *value, (attn_mask ? ::std::optional<at::Tensor>(*attn_mask) : ::std::nullopt), dropout_p, (bool)is_causal, scale_null ? c10::nullopt : c10::optional<double>(scale_v));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -14418,42 +14836,42 @@ void atg_scatter_value_reduce_out(tensor *out__, tensor out, tensor self, int64_
 
 void atg_searchsorted(tensor *out__, tensor sorted_sequence, tensor self, int out_int32, int right, char* side_ptr, int side_len, tensor sorter) {
   PROTECT(
-    auto outputs__ = torch::searchsorted(*sorted_sequence, *self, (bool)out_int32, (bool)right, std::string(side_ptr, side_len), (sorter ? *sorter : torch::Tensor()));
+    auto outputs__ = torch::searchsorted(*sorted_sequence, *self, (bool)out_int32, (bool)right, std::string(side_ptr, side_len), (sorter ? ::std::optional<at::Tensor>(*sorter) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_searchsorted_scalar(tensor *out__, tensor sorted_sequence, scalar self_scalar, int out_int32, int right, char* side_ptr, int side_len, tensor sorter) {
   PROTECT(
-    auto outputs__ = torch::searchsorted(*sorted_sequence, *self_scalar, (bool)out_int32, (bool)right, std::string(side_ptr, side_len), (sorter ? *sorter : torch::Tensor()));
+    auto outputs__ = torch::searchsorted(*sorted_sequence, *self_scalar, (bool)out_int32, (bool)right, std::string(side_ptr, side_len), (sorter ? ::std::optional<at::Tensor>(*sorter) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_searchsorted_scalar_out(tensor *out__, tensor out, tensor sorted_sequence, scalar self_scalar, int out_int32, int right, char* side_ptr, int side_len, tensor sorter) {
   PROTECT(
-    auto outputs__ = torch::searchsorted_out(*out, *sorted_sequence, *self_scalar, (bool)out_int32, (bool)right, std::string(side_ptr, side_len), (sorter ? *sorter : torch::Tensor()));
+    auto outputs__ = torch::searchsorted_out(*out, *sorted_sequence, *self_scalar, (bool)out_int32, (bool)right, std::string(side_ptr, side_len), (sorter ? ::std::optional<at::Tensor>(*sorter) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_searchsorted_tensor_out(tensor *out__, tensor out, tensor sorted_sequence, tensor self, int out_int32, int right, char* side_ptr, int side_len, tensor sorter) {
   PROTECT(
-    auto outputs__ = torch::searchsorted_out(*out, *sorted_sequence, *self, (bool)out_int32, (bool)right, std::string(side_ptr, side_len), (sorter ? *sorter : torch::Tensor()));
+    auto outputs__ = torch::searchsorted_out(*out, *sorted_sequence, *self, (bool)out_int32, (bool)right, std::string(side_ptr, side_len), (sorter ? ::std::optional<at::Tensor>(*sorter) : ::std::nullopt));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_segment_reduce(tensor *out__, tensor data, char* reduce_ptr, int reduce_len, tensor lengths, tensor indices, tensor offsets, int64_t axis, int unsafe, scalar initial) {
   PROTECT(
-    auto outputs__ = torch::segment_reduce(*data, std::string(reduce_ptr, reduce_len), (lengths ? *lengths : torch::Tensor()), (indices ? *indices : torch::Tensor()), (offsets ? *offsets : torch::Tensor()), axis, (bool)unsafe, *initial);
+    auto outputs__ = torch::segment_reduce(*data, std::string(reduce_ptr, reduce_len), (lengths ? ::std::optional<at::Tensor>(*lengths) : ::std::nullopt), (indices ? ::std::optional<at::Tensor>(*indices) : ::std::nullopt), (offsets ? ::std::optional<at::Tensor>(*offsets) : ::std::nullopt), axis, (bool)unsafe, *initial);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_segment_reduce_out(tensor *out__, tensor out, tensor data, char* reduce_ptr, int reduce_len, tensor lengths, tensor indices, tensor offsets, int64_t axis, int unsafe, scalar initial) {
   PROTECT(
-    auto outputs__ = torch::segment_reduce_out(*out, *data, std::string(reduce_ptr, reduce_len), (lengths ? *lengths : torch::Tensor()), (indices ? *indices : torch::Tensor()), (offsets ? *offsets : torch::Tensor()), axis, (bool)unsafe, *initial);
+    auto outputs__ = torch::segment_reduce_out(*out, *data, std::string(reduce_ptr, reduce_len), (lengths ? ::std::optional<at::Tensor>(*lengths) : ::std::nullopt), (indices ? ::std::optional<at::Tensor>(*indices) : ::std::nullopt), (offsets ? ::std::optional<at::Tensor>(*offsets) : ::std::nullopt), axis, (bool)unsafe, *initial);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -14807,6 +15225,13 @@ void atg_slice_copy_tensor_out(tensor *out__, tensor out, tensor self, int64_t d
   )
 }
 
+void atg_slice_inverse(tensor *out__, tensor self, tensor src, int64_t dim, int64_t start_v, uint8_t start_null, int64_t end_v, uint8_t end_null, int64_t step) {
+  PROTECT(
+    auto outputs__ = torch::slice_inverse(*self, *src, dim, start_null ? c10::nullopt : c10::optional<int64_t>(start_v), end_null ? c10::nullopt : c10::optional<int64_t>(end_v), step);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
 void atg_slice_scatter(tensor *out__, tensor self, tensor src, int64_t dim, int64_t start_v, uint8_t start_null, int64_t end_v, uint8_t end_null, int64_t step) {
   PROTECT(
     auto outputs__ = torch::slice_scatter(*self, *src, dim, start_null ? c10::nullopt : c10::optional<int64_t>(start_v), end_null ? c10::nullopt : c10::optional<int64_t>(end_v), step);
@@ -14839,70 +15264,70 @@ void atg_slogdet_out(tensor *out__, tensor sign, tensor logabsdet, tensor self) 
 
 void atg_slow_conv3d(tensor *out__, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len) {
   PROTECT(
-    auto outputs__ = torch::slow_conv3d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len));
+    auto outputs__ = torch::slow_conv3d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_slow_conv3d_out(tensor *out__, tensor out, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len) {
   PROTECT(
-    auto outputs__ = torch::slow_conv3d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len));
+    auto outputs__ = torch::slow_conv3d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_slow_conv_dilated2d(tensor *out__, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::slow_conv_dilated2d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::slow_conv_dilated2d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_slow_conv_dilated2d_out(tensor *out__, tensor out, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::slow_conv_dilated2d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::slow_conv_dilated2d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_slow_conv_dilated3d(tensor *out__, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::slow_conv_dilated3d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::slow_conv_dilated3d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_slow_conv_dilated3d_out(tensor *out__, tensor out, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::slow_conv_dilated3d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::slow_conv_dilated3d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_slow_conv_transpose2d(tensor *out__, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *output_padding_data, int output_padding_len, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::slow_conv_transpose2d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::slow_conv_transpose2d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_slow_conv_transpose2d_out(tensor *out__, tensor out, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *output_padding_data, int output_padding_len, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::slow_conv_transpose2d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::slow_conv_transpose2d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_slow_conv_transpose3d(tensor *out__, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *output_padding_data, int output_padding_len, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::slow_conv_transpose3d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::slow_conv_transpose3d(*self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_slow_conv_transpose3d_out(tensor *out__, tensor out, tensor self, tensor weight, int64_t *kernel_size_data, int kernel_size_len, tensor bias, int64_t *stride_data, int stride_len, int64_t *padding_data, int padding_len, int64_t *output_padding_data, int output_padding_len, int64_t *dilation_data, int dilation_len) {
   PROTECT(
-    auto outputs__ = torch::slow_conv_transpose3d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? *bias : torch::Tensor()), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), torch::IntArrayRef(dilation_data, dilation_len));
+    auto outputs__ = torch::slow_conv_transpose3d_out(*out, *self, *weight, torch::IntArrayRef(kernel_size_data, kernel_size_len), (bias ? ::std::optional<at::Tensor>(*bias) : ::std::nullopt), torch::IntArrayRef(stride_data, stride_len), torch::IntArrayRef(padding_data, padding_len), torch::IntArrayRef(output_padding_data, output_padding_len), torch::IntArrayRef(dilation_data, dilation_len));
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -16737,14 +17162,14 @@ void atg_std_out(tensor *out__, tensor out, tensor self, int64_t *dim_data, int 
 
 void atg_stft(tensor *out__, tensor self, int64_t n_fft, int64_t hop_length_v, uint8_t hop_length_null, int64_t win_length_v, uint8_t win_length_null, tensor window, int normalized, int onesided, int return_complex) {
   PROTECT(
-    auto outputs__ = torch::stft(*self, n_fft, hop_length_null ? c10::nullopt : c10::optional<int64_t>(hop_length_v), win_length_null ? c10::nullopt : c10::optional<int64_t>(win_length_v), (window ? *window : torch::Tensor()), (bool)normalized, (bool)onesided, (bool)return_complex);
+    auto outputs__ = torch::stft(*self, n_fft, hop_length_null ? c10::nullopt : c10::optional<int64_t>(hop_length_v), win_length_null ? c10::nullopt : c10::optional<int64_t>(win_length_v), (window ? ::std::optional<at::Tensor>(*window) : ::std::nullopt), (bool)normalized, (bool)onesided, (bool)return_complex);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
 void atg_stft_center(tensor *out__, tensor self, int64_t n_fft, int64_t hop_length_v, uint8_t hop_length_null, int64_t win_length_v, uint8_t win_length_null, tensor window, int center, char* pad_mode_ptr, int pad_mode_len, int normalized, int onesided, int return_complex) {
   PROTECT(
-    auto outputs__ = torch::stft(*self, n_fft, hop_length_null ? c10::nullopt : c10::optional<int64_t>(hop_length_v), win_length_null ? c10::nullopt : c10::optional<int64_t>(win_length_v), (window ? *window : torch::Tensor()), (bool)center, std::string(pad_mode_ptr, pad_mode_len), (bool)normalized, (bool)onesided, (bool)return_complex);
+    auto outputs__ = torch::stft(*self, n_fft, hop_length_null ? c10::nullopt : c10::optional<int64_t>(hop_length_v), win_length_null ? c10::nullopt : c10::optional<int64_t>(win_length_v), (window ? ::std::optional<at::Tensor>(*window) : ::std::nullopt), (bool)center, std::string(pad_mode_ptr, pad_mode_len), (bool)normalized, (bool)onesided, (bool)return_complex);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
