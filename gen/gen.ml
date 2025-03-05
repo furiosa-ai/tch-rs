@@ -91,6 +91,7 @@ let with_optional_scalar_args =
     ; "addmm"
     ; "constant_pad_nd"
     ; "hardtanh"
+    ; "leaky_relu"
     ]
 
 let excluded_prefixes =
