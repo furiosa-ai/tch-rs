@@ -506,7 +506,6 @@ fn main() -> anyhow::Result<()> {
             system_info.link("fmt");
             system_info.link("pthreadpool");
             system_info.link("pytorch_qnnpack");
-            system_info.link("XNNPACK");
         }
         system_info.link("torch_cpu");
         system_info.link("torch");
