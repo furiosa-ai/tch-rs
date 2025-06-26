@@ -2406,7 +2406,7 @@ void atg_std_mean_dim(tensor *, tensor self, int64_t *dim_data, int dim_len, int
 void atg_std_out(tensor *, tensor out, tensor self, int64_t *dim_data, int dim_len, int unbiased, int keepdim);
 void atg_stft(tensor *, tensor self, int64_t n_fft, int64_t hop_length_v, uint8_t hop_length_null, int64_t win_length_v, uint8_t win_length_null, tensor window, int normalized, int onesided, int return_complex, int align_to_window);
 void atg_stft_center(tensor *, tensor self, int64_t n_fft, int64_t hop_length_v, uint8_t hop_length_null, int64_t win_length_v, uint8_t win_length_null, tensor window, int center, char* pad_mode_ptr, int pad_mode_len, int normalized, int onesided, int return_complex, int align_to_window);
-void atg_sub(tensor *, tensor self, tensor other);
+void atg_sub(tensor *, tensor self, tensor other, scalar alpha);
 void atg_sub_(tensor *, tensor self, tensor other);
 void atg_sub_out(tensor *, tensor out, tensor self, tensor other);
 void atg_sub_scalar(tensor *, tensor self, scalar other, scalar alpha);
