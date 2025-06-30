@@ -1,6 +1,6 @@
 [package]
 name = "torch-sys"
-version = "0.17.0"
+version = "0.20.0"
 authors = ["Laurent Mazare <lmazare@gmail.com>"]
 edition = "2021"
 build = "build.rs"
@@ -17,7 +17,7 @@ libc = "0.2.0"
 
 [build-dependencies]
 anyhow = "^1.0.60"
-cc = "1.0.61"
+cc = "1.2"
 ureq = { version = "2.6", optional = true, features = ["json"] }
 serde_json = { version = "1.0", optional = true }
 serde = { version = "1.0", optional = true, features = ["derive"] }

@@ -33,6 +33,7 @@ pub struct Variables {
 pub struct VarStore {
     pub variables_: Arc<Mutex<Variables>>,
     device: Device,
+    kind: Kind,
 }
 
 /// A variable store with an associated path for variables naming.
@@ -57,7 +58,7 @@ impl VarStore {
     pub fn new(device: Device) -> VarStore {
         let variables =
             Variables { named_variables: HashMap::new(), trainable_variables: Vec::new() };
-        VarStore { variables_: Arc::new(Mutex::new(variables)), device }
+        VarStore { variables_: Arc::new(Mutex::new(variables)), device, kind: Kind::Float }
     }
 
     pub fn merge(var_stores: Vec<(VarStore, Option<&str>)>) -> Result<VarStore, TchError> {
@@ -108,6 +109,11 @@ impl VarStore {
     /// Gets the device for this var-store.
     pub fn device(&self) -> Device {
         self.device
+    }
+
+    /// Gets the default kind of new variables
+    pub fn kind(&self) -> Kind {
+        self.kind
     }
 
     /// Returns the number of tensors currently stored on this var-store.
@@ -322,13 +328,15 @@ impl VarStore {
         }
     }
 
-    /// Casts all variables in a var store to the target kind .
+    /// Casts all variables in a var store to the target kind and sets the default kind
+    /// for new variables.
     ///
     /// For floating-point conversion, methods `half`, `bfloat16`, `float` and `double`
     /// should be preferred as they ensure only float-like variables will be converted
     /// to the target type.
     pub fn set_kind(&mut self, kind: Kind) {
         self.root().set_kind(kind);
+        self.kind = kind;
     }
 
     /// Casts all float-like variable of a var store to half-precision (Half kind).
@@ -410,6 +418,11 @@ impl<'a> Path<'a> {
         self.var_store.device
     }
 
+    /// Gets the default kind of new variables
+    pub fn kind(&self) -> Kind {
+        self.var_store.kind
+    }
+
     pub fn path(&self, name: &str) -> String {
         if name.chars().any(|x| x == SEP) {
             panic!("variable name cannot contain {SEP} {name}");
@@ -483,7 +496,7 @@ impl<'a> Path<'a> {
         self.set_float_kind(Kind::Double);
     }
 
-    pub(crate) fn add(&self, name: &str, tensor: Tensor, trainable: bool) -> Tensor {
+    pub fn add(&self, name: &str, tensor: Tensor, trainable: bool) -> Tensor {
         let path = self.path(name);
         let mut variables = self.var_store.variables_.lock().unwrap();
         let path = if variables.named_variables.contains_key(&path) {
@@ -551,7 +564,7 @@ impl<'a> Path<'a> {
     /// The variable uses a float tensor initialized as per the
     /// related argument.
     pub fn f_var(&self, name: &str, dims: &[i64], init: Init) -> Result<Tensor, TchError> {
-        let v = super::f_init(init, dims, self.device())?;
+        let v = super::f_init(init, dims, self.device(), self.kind())?;
         Ok(self.add(name, v, true))
     }
 
@@ -815,7 +828,7 @@ impl<'a> Path<'a> {
     }
 }
 
-impl<'a> Entry<'a> {
+impl Entry<'_> {
     /// Returns the existing entry if, otherwise create a new variable.
     ///
     /// If this entry name matches the name of a variables stored in the
