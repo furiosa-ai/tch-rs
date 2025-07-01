@@ -250,6 +250,7 @@ extern "C" {
     pub fn ati_bool_list(v: *const c_char, n: c_int) -> *mut CIValue;
     pub fn ati_string_list(v: *const *const c_char, n: c_int) -> *mut CIValue;
     pub fn ati_tensor_list(v: *const *mut C_tensor, n: c_int) -> *mut CIValue;
+    pub fn ati_device(device_idx: c_int) -> *mut CIValue;
 
     // Type query
     pub fn ati_tag(arg: *mut CIValue) -> c_int;
@@ -333,8 +334,4 @@ extern "C" {
     );
     pub fn atm_set_tensor_expr_fuser_enabled(enabled: c_int);
     pub fn atm_get_tensor_expr_fuser_enabled() -> bool;
-}
-
-extern "C" {
-    pub fn dummy_cuda_dependency();
 }

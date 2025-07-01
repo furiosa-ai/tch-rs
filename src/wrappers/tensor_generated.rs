@@ -284,8 +284,10 @@ impl Tensor {
         size: impl IntListOption,
         stride: impl IntListOption,
         dtype: impl Into<Option<Kind>>,
+        device: Device,
+        layout: Option<Layout>,
     ) {
-        Tensor::f_internal_assert_tensor_metadata(a, size, stride, dtype).unwrap()
+        Tensor::f_internal_assert_tensor_metadata(a, size, stride, dtype, device, layout).unwrap()
     }
 
     pub fn internal_autocast_to_full_precision(
@@ -640,6 +642,10 @@ impl Tensor {
         self.f_internal_convert_weight_to_int4pack(innerktiles).unwrap()
     }
 
+    pub fn internal_convert_weight_to_int4pack_for_cpu(&self, innerktiles: i64) -> Tensor {
+        self.f_internal_convert_weight_to_int4pack_for_cpu(innerktiles).unwrap()
+    }
+
     pub fn internal_convolution<T: Borrow<Tensor>>(
         &self,
         weight: &Tensor,
@@ -776,6 +782,8 @@ impl Tensor {
         out_dtype: impl Into<Option<Kind>>,
         transpose_result: bool,
         alg_id: i64,
+        split_k: i64,
+        split_k_one_kernel: bool,
     ) -> Tensor {
         Tensor::f_internal_cslt_sparse_mm(
             compressed_a,
@@ -785,6 +793,8 @@ impl Tensor {
             out_dtype,
             transpose_result,
             alg_id,
+            split_k,
+            split_k_one_kernel,
         )
         .unwrap()
     }
@@ -1219,6 +1229,42 @@ impl Tensor {
         total: &Tensor,
     ) -> Tensor {
         Tensor::f_internal_dirichlet_grad_out(out, x, alpha, total).unwrap()
+    }
+
+    pub fn internal_dyn_quant_matmul_4bit(
+        inp: &Tensor,
+        packed_weights: &Tensor,
+        block_size: i64,
+        in_features: i64,
+        out_features: i64,
+    ) -> Tensor {
+        Tensor::f_internal_dyn_quant_matmul_4bit(
+            inp,
+            packed_weights,
+            block_size,
+            in_features,
+            out_features,
+        )
+        .unwrap()
+    }
+
+    pub fn internal_dyn_quant_pack_4bit_weight<T: Borrow<Tensor>>(
+        weights: &Tensor,
+        scales_zeros: &Tensor,
+        bias: Option<T>,
+        block_size: i64,
+        in_features: i64,
+        out_features: i64,
+    ) -> Tensor {
+        Tensor::f_internal_dyn_quant_pack_4bit_weight(
+            weights,
+            scales_zeros,
+            bias,
+            block_size,
+            in_features,
+            out_features,
+        )
+        .unwrap()
     }
 
     pub fn internal_efficient_attention_backward<T: Borrow<Tensor>>(
@@ -1846,8 +1892,8 @@ impl Tensor {
         max_k: i64,
         dropout_p: f64,
         is_causal: bool,
-        philox_seed: &Tensor,
-        philox_offset: &Tensor,
+        rng_state: &Tensor,
+        unused: &Tensor,
         scale: impl Into<Option<f64>>,
         window_size_left: impl Into<Option<i64>>,
         window_size_right: impl Into<Option<i64>>,
@@ -1865,8 +1911,8 @@ impl Tensor {
             max_k,
             dropout_p,
             is_causal,
-            philox_seed,
-            philox_offset,
+            rng_state,
+            unused,
             scale,
             window_size_left,
             window_size_right,
@@ -2034,9 +2080,10 @@ impl Tensor {
         dropout_p: f64,
         is_causal: bool,
         scale: impl Into<Option<f64>>,
+        enable_gqa: bool,
     ) -> i64 {
         Tensor::f_internal_fused_sdp_choice(
-            query, key, value, attn_mask, dropout_p, is_causal, scale,
+            query, key, value, attn_mask, dropout_p, is_causal, scale, enable_gqa,
         )
         .unwrap()
     }
@@ -2936,12 +2983,35 @@ impl Tensor {
         .unwrap()
     }
 
+    pub fn internal_nested_from_padded_tensor<T: Borrow<Tensor>>(
+        padded: &Tensor,
+        offsets: &Tensor,
+        dummy: &Tensor,
+        ragged_idx: i64,
+        min_seqlen: Option<T>,
+        max_seqlen: Option<T>,
+        sum_s: impl Into<Option<i64>>,
+    ) -> Tensor {
+        Tensor::f_internal_nested_from_padded_tensor(
+            padded, offsets, dummy, ragged_idx, min_seqlen, max_seqlen, sum_s,
+        )
+        .unwrap()
+    }
+
     pub fn internal_nested_get_jagged_dummy(any: &Tensor) -> Tensor {
         Tensor::f_internal_nested_get_jagged_dummy(any).unwrap()
     }
 
     pub fn internal_nested_get_lengths(&self) -> Tensor {
         self.f_internal_nested_get_lengths().unwrap()
+    }
+
+    pub fn internal_nested_get_max_seqlen(&self) -> Tensor {
+        self.f_internal_nested_get_max_seqlen().unwrap()
+    }
+
+    pub fn internal_nested_get_min_seqlen(&self) -> Tensor {
+        self.f_internal_nested_get_min_seqlen().unwrap()
     }
 
     pub fn internal_nested_get_offsets(&self) -> Tensor {
@@ -3017,8 +3087,13 @@ impl Tensor {
         dummy: &Tensor,
         lengths: Option<T>,
         ragged_idx: i64,
+        min_seqlen: Option<T>,
+        max_seqlen: Option<T>,
     ) -> Tensor {
-        self.f_internal_nested_view_from_jagged(offsets, dummy, lengths, ragged_idx).unwrap()
+        self.f_internal_nested_view_from_jagged(
+            offsets, dummy, lengths, ragged_idx, min_seqlen, max_seqlen,
+        )
+        .unwrap()
     }
 
     pub fn internal_nested_view_from_jagged_copy<T: Borrow<Tensor>>(
@@ -3027,8 +3102,13 @@ impl Tensor {
         dummy: &Tensor,
         lengths: Option<T>,
         ragged_idx: i64,
+        min_seqlen: Option<T>,
+        max_seqlen: Option<T>,
     ) -> Tensor {
-        self.f_internal_nested_view_from_jagged_copy(offsets, dummy, lengths, ragged_idx).unwrap()
+        self.f_internal_nested_view_from_jagged_copy(
+            offsets, dummy, lengths, ragged_idx, min_seqlen, max_seqlen,
+        )
+        .unwrap()
     }
 
     pub fn internal_nested_view_from_jagged_copy_out<T: Borrow<Tensor>>(
@@ -3038,9 +3118,13 @@ impl Tensor {
         dummy: &Tensor,
         lengths: Option<T>,
         ragged_idx: i64,
+        min_seqlen: Option<T>,
+        max_seqlen: Option<T>,
     ) -> Tensor {
-        self.f_internal_nested_view_from_jagged_copy_out(out, offsets, dummy, lengths, ragged_idx)
-            .unwrap()
+        self.f_internal_nested_view_from_jagged_copy_out(
+            out, offsets, dummy, lengths, ragged_idx, min_seqlen, max_seqlen,
+        )
+        .unwrap()
     }
 
     pub fn internal_new_zeros_with_same_feature_meta(
@@ -3244,6 +3328,10 @@ impl Tensor {
         Tensor::f_internal_rowwise_prune(weight, mask, compressed_indices_dtype).unwrap()
     }
 
+    pub fn internal_safe_softmax(&self, dim: i64, dtype: impl Into<Option<Kind>>) -> Tensor {
+        self.f_internal_safe_softmax(dim, dtype).unwrap()
+    }
+
     pub fn internal_sample_dirichlet(&self) -> Tensor {
         self.f_internal_sample_dirichlet().unwrap()
     }
@@ -3265,8 +3353,33 @@ impl Tensor {
         is_causal: bool,
         dropout_mask: Option<T>,
         scale: impl Into<Option<f64>>,
+        enable_gqa: bool,
     ) -> (Tensor, Tensor) {
         Tensor::f_internal_scaled_dot_product_attention_math(
+            query,
+            key,
+            value,
+            attn_mask,
+            dropout_p,
+            is_causal,
+            dropout_mask,
+            scale,
+            enable_gqa,
+        )
+        .unwrap()
+    }
+
+    pub fn internal_scaled_dot_product_attention_math_for_mps<T: Borrow<Tensor>>(
+        query: &Tensor,
+        key: &Tensor,
+        value: &Tensor,
+        attn_mask: Option<T>,
+        dropout_p: f64,
+        is_causal: bool,
+        dropout_mask: Option<T>,
+        scale: impl Into<Option<f64>>,
+    ) -> (Tensor, Tensor) {
+        Tensor::f_internal_scaled_dot_product_attention_math_for_mps(
             query,
             key,
             value,
@@ -3286,14 +3399,15 @@ impl Tensor {
         value: &Tensor,
         out: &Tensor,
         logsumexp: &Tensor,
+        philox_seed: &Tensor,
+        philox_offset: &Tensor,
+        attn_bias: &Tensor,
         cum_seq_q: &Tensor,
         cum_seq_k: &Tensor,
         max_q: i64,
         max_k: i64,
         dropout_p: f64,
         is_causal: bool,
-        philox_seed: &Tensor,
-        philox_offset: &Tensor,
         scale: impl Into<Option<f64>>,
     ) -> (Tensor, Tensor, Tensor) {
         Tensor::f_internal_scaled_dot_product_cudnn_attention_backward(
@@ -3303,14 +3417,15 @@ impl Tensor {
             value,
             out,
             logsumexp,
+            philox_seed,
+            philox_offset,
+            attn_bias,
             cum_seq_q,
             cum_seq_k,
             max_q,
             max_k,
             dropout_p,
             is_causal,
-            philox_seed,
-            philox_offset,
             scale,
         )
         .unwrap()
@@ -3409,23 +3524,47 @@ impl Tensor {
         .unwrap()
     }
 
+    pub fn internal_scaled_grouped_mm<T: Borrow<Tensor>>(
+        &self,
+        mat2: &Tensor,
+        scale_a: &Tensor,
+        scale_b: &Tensor,
+        offs: Option<T>,
+        bias: Option<T>,
+        scale_result: Option<T>,
+        out_dtype: impl Into<Option<Kind>>,
+        use_fast_accum: bool,
+    ) -> Tensor {
+        self.f_internal_scaled_grouped_mm(
+            mat2,
+            scale_a,
+            scale_b,
+            offs,
+            bias,
+            scale_result,
+            out_dtype,
+            use_fast_accum,
+        )
+        .unwrap()
+    }
+
     pub fn internal_scaled_mm<T: Borrow<Tensor>>(
         &self,
         mat2: &Tensor,
+        scale_a: &Tensor,
+        scale_b: &Tensor,
         bias: Option<T>,
-        out_dtype: impl Into<Option<Kind>>,
-        scale_a: Option<T>,
-        scale_b: Option<T>,
         scale_result: Option<T>,
+        out_dtype: impl Into<Option<Kind>>,
         use_fast_accum: bool,
-    ) -> (Tensor, Tensor) {
+    ) -> Tensor {
         self.f_internal_scaled_mm(
             mat2,
-            bias,
-            out_dtype,
             scale_a,
             scale_b,
+            bias,
             scale_result,
+            out_dtype,
             use_fast_accum,
         )
         .unwrap()
@@ -3434,24 +3573,22 @@ impl Tensor {
     pub fn internal_scaled_mm_out<T: Borrow<Tensor>>(
         &self,
         out: &Tensor,
-        out_amax: &Tensor,
         mat2: &Tensor,
+        scale_a: &Tensor,
+        scale_b: &Tensor,
         bias: Option<T>,
-        out_dtype: impl Into<Option<Kind>>,
-        scale_a: Option<T>,
-        scale_b: Option<T>,
         scale_result: Option<T>,
+        out_dtype: impl Into<Option<Kind>>,
         use_fast_accum: bool,
-    ) -> (Tensor, Tensor) {
+    ) -> Tensor {
         self.f_internal_scaled_mm_out(
             out,
-            out_amax,
             mat2,
-            bias,
-            out_dtype,
             scale_a,
             scale_b,
+            bias,
             scale_result,
+            out_dtype,
             use_fast_accum,
         )
         .unwrap()
@@ -4057,6 +4194,10 @@ impl Tensor {
         Tensor::f_internal_spdiags_out(out, diagonals, offsets, shape, layout).unwrap()
     }
 
+    pub fn internal_spsolve(a: &Tensor, b: &Tensor, left: bool) -> Tensor {
+        Tensor::f_internal_spsolve(a, b, left).unwrap()
+    }
+
     pub fn internal_stack<T: Borrow<Tensor>>(tensors: &[T], dim: i64) -> Tensor {
         Tensor::f_internal_stack(tensors, dim).unwrap()
     }
@@ -4582,6 +4723,24 @@ impl Tensor {
         self.f_internal_unsafe_index_put(indices, values, accumulate).unwrap()
     }
 
+    pub fn internal_unsafe_masked_index<T: Borrow<Tensor>, S: Into<Scalar>>(
+        &self,
+        mask: &Tensor,
+        indices: &[Option<T>],
+        fill: S,
+    ) -> Tensor {
+        self.f_internal_unsafe_masked_index(mask, indices, fill).unwrap()
+    }
+
+    pub fn internal_unsafe_masked_index_put_accumulate<T: Borrow<Tensor>>(
+        &self,
+        mask: &Tensor,
+        indices: &[Option<T>],
+        values: &Tensor,
+    ) -> Tensor {
+        self.f_internal_unsafe_masked_index_put_accumulate(mask, indices, values).unwrap()
+    }
+
     pub fn internal_unsafe_view(&self, size: impl IntList) -> Tensor {
         self.f_internal_unsafe_view(size).unwrap()
     }
@@ -5077,6 +5236,15 @@ impl Tensor {
         self.f_internal_weight_int4pack_mm(mat2, qgroupsize, qscaleandzeros).unwrap()
     }
 
+    pub fn internal_weight_int4pack_mm_for_cpu(
+        &self,
+        mat2: &Tensor,
+        qgroupsize: i64,
+        qscaleandzeros: &Tensor,
+    ) -> Tensor {
+        self.f_internal_weight_int4pack_mm_for_cpu(mat2, qgroupsize, qscaleandzeros).unwrap()
+    }
+
     pub fn internal_weight_int8pack_mm(&self, mat2: &Tensor, scales: &Tensor) -> Tensor {
         self.f_internal_weight_int8pack_mm(mat2, scales).unwrap()
     }
@@ -5154,6 +5322,36 @@ impl Tensor {
         Tensor::f_internal_weight_norm_interface_out(out0, out1, v, g, dim).unwrap()
     }
 
+    pub fn internal_wrapped_linear_prepack(
+        weight: &Tensor,
+        weight_scale: &Tensor,
+        weight_zero_point: &Tensor,
+        bias: &Tensor,
+    ) -> Tensor {
+        Tensor::f_internal_wrapped_linear_prepack(weight, weight_scale, weight_zero_point, bias)
+            .unwrap()
+    }
+
+    pub fn internal_wrapped_quantized_linear_prepacked(
+        &self,
+        input_scale: &Tensor,
+        input_zero_point: &Tensor,
+        packed_weight: &Tensor,
+        output_scale: &Tensor,
+        output_zero_point: &Tensor,
+        out_channel: i64,
+    ) -> Tensor {
+        self.f_internal_wrapped_quantized_linear_prepacked(
+            input_scale,
+            input_zero_point,
+            packed_weight,
+            output_scale,
+            output_zero_point,
+            out_channel,
+        )
+        .unwrap()
+    }
+
     pub fn abs(&self) -> Tensor {
         self.f_abs().unwrap()
     }
@@ -5204,6 +5402,10 @@ impl Tensor {
 
     pub fn adaptive_avg_pool1d(&self, output_size: impl IntList) -> Tensor {
         self.f_adaptive_avg_pool1d(output_size).unwrap()
+    }
+
+    pub fn adaptive_avg_pool1d_out(&self, out: &Tensor, output_size: impl IntList) -> Tensor {
+        self.f_adaptive_avg_pool1d_out(out, output_size).unwrap()
     }
 
     pub fn adaptive_avg_pool2d(&self, output_size: impl IntList) -> Tensor {
@@ -5825,6 +6027,19 @@ impl Tensor {
         count_include_pad: bool,
     ) -> Tensor {
         self.f_avg_pool1d(kernel_size, stride, padding, ceil_mode, count_include_pad).unwrap()
+    }
+
+    pub fn avg_pool1d_out(
+        &self,
+        out: &Tensor,
+        kernel_size: impl IntList,
+        stride: impl IntList,
+        padding: impl IntList,
+        ceil_mode: bool,
+        count_include_pad: bool,
+    ) -> Tensor {
+        self.f_avg_pool1d_out(out, kernel_size, stride, padding, ceil_mode, count_include_pad)
+            .unwrap()
     }
 
     pub fn avg_pool2d(
@@ -12328,6 +12543,10 @@ impl Tensor {
         self.f_mean_dim(dim, keepdim, dtype).unwrap()
     }
 
+    pub fn mean_dtype_out(&self, out: &Tensor, dtype: impl Into<Option<Kind>>) -> Tensor {
+        self.f_mean_dtype_out(out, dtype).unwrap()
+    }
+
     pub fn mean_out(
         &self,
         out: &Tensor,
@@ -14260,8 +14479,9 @@ impl Tensor {
         sequences: &[T],
         batch_first: bool,
         padding_value: f64,
+        padding_side: &str,
     ) -> Tensor {
-        Tensor::f_pad_sequence(sequences, batch_first, padding_value).unwrap()
+        Tensor::f_pad_sequence(sequences, batch_first, padding_value, padding_side).unwrap()
     }
 
     pub fn pairwise_distance(x1: &Tensor, x2: &Tensor, p: f64, eps: f64, keepdim: bool) -> Tensor {
@@ -15541,6 +15761,10 @@ impl Tensor {
         .unwrap()
     }
 
+    pub fn rrelu_with_noise_functional(&self, noise: &Tensor, training: bool) -> (Tensor, Tensor) {
+        self.f_rrelu_with_noise_functional(noise, training).unwrap()
+    }
+
     pub fn rrelu_with_noise_out(&self, out: &Tensor, noise: &Tensor, training: bool) -> Tensor {
         self.f_rrelu_with_noise_out(out, noise, training).unwrap()
     }
@@ -15589,9 +15813,10 @@ impl Tensor {
         dropout_p: f64,
         is_causal: bool,
         scale: impl Into<Option<f64>>,
+        enable_gqa: bool,
     ) -> Tensor {
         Tensor::f_scaled_dot_product_attention(
-            query, key, value, attn_mask, dropout_p, is_causal, scale,
+            query, key, value, attn_mask, dropout_p, is_causal, scale, enable_gqa,
         )
         .unwrap()
     }
@@ -17685,9 +17910,19 @@ impl Tensor {
         normalized: bool,
         onesided: bool,
         return_complex: bool,
+        align_to_window: bool,
     ) -> Tensor {
-        self.f_stft(n_fft, hop_length, win_length, window, normalized, onesided, return_complex)
-            .unwrap()
+        self.f_stft(
+            n_fft,
+            hop_length,
+            win_length,
+            window,
+            normalized,
+            onesided,
+            return_complex,
+            align_to_window,
+        )
+        .unwrap()
     }
 
     pub fn stft_center<T: Borrow<Tensor>>(
@@ -17701,6 +17936,7 @@ impl Tensor {
         normalized: bool,
         onesided: bool,
         return_complex: bool,
+        align_to_window: bool,
     ) -> Tensor {
         self.f_stft_center(
             n_fft,
@@ -17712,6 +17948,7 @@ impl Tensor {
             normalized,
             onesided,
             return_complex,
+            align_to_window,
         )
         .unwrap()
     }
@@ -18552,6 +18789,16 @@ impl Tensor {
         self.f_upsample_bilinear2d_vec(output_size, align_corners, scale_factors).unwrap()
     }
 
+    pub fn upsample_bilinear2d_vec_out(
+        &self,
+        out: &Tensor,
+        output_size: impl IntListOption,
+        align_corners: bool,
+        scale_factors: impl DoubleList,
+    ) -> Tensor {
+        self.f_upsample_bilinear2d_vec_out(out, output_size, align_corners, scale_factors).unwrap()
+    }
+
     pub fn upsample_linear1d(
         &self,
         output_size: impl IntList,
@@ -18728,6 +18975,15 @@ impl Tensor {
         scale_factors: impl DoubleList,
     ) -> Tensor {
         self.f_upsample_nearest2d_vec(output_size, scale_factors).unwrap()
+    }
+
+    pub fn upsample_nearest2d_vec_out(
+        &self,
+        out: &Tensor,
+        output_size: impl IntListOption,
+        scale_factors: impl DoubleList,
+    ) -> Tensor {
+        self.f_upsample_nearest2d_vec_out(out, output_size, scale_factors).unwrap()
     }
 
     pub fn upsample_nearest3d(
